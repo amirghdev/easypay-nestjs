@@ -44,6 +44,13 @@ export class EasypayService {
           raw: error?.response?.data,
         };
       }
+      return {
+        success: false,
+        data: null,
+        code: -1,
+        message: error?.message || "An unknown error occurred",
+        raw: error,
+      };
     }
   }
 
@@ -72,6 +79,13 @@ export class EasypayService {
           raw: error?.response?.data,
         };
       }
+      return {
+        success: false,
+        data: null,
+        code: -1,
+        message: error?.message || "An unknown error occurred",
+        raw: error,
+      };
     }
   }
 }
