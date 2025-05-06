@@ -1,4 +1,4 @@
 node_modules/
-dist/
 *.ts
 tsconfig.json
+package-lock.json
