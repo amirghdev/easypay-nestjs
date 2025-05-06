@@ -18,19 +18,4 @@
         "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": false,
     },
-    "include": [
-        "easypay.module.ts",
-        "index.ts",
-        "callback/**/*",
-        "class/**/*",
-        "errors/**/*",
-        "request/**/*",
-        "services/**/*",
-        "types/**/*",
-        "verify/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist"
-    ]
 }
