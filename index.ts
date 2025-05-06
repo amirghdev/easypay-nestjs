@@ -6,3 +6,4 @@ export * from "./errors/index";
 export * from "./class/index";
 export * from "./callback/index";
 export * from "./types/index";
+export * from "./verify/index";
