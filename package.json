@@ -1,12 +1,12 @@
 {
     "name": "easypay-nestjs",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "description": "easypay for iranian payment gateways",
     "main": "dist/index.js",
     "module": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "build": "tsc",
+        "build": "nest build",
         "prepublishOnly": "npm run build"
     },
     "keywords": [
