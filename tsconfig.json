@@ -3,7 +3,7 @@
         "module": "commonjs",
         "declaration": true,
         "removeComments": true,
-        "emitDecoratorMetadata": false,
+        "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
         "target": "ES2021",
@@ -17,5 +17,7 @@
         "strictBindCallApply": false,
         "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": false,
+        "moduleResolution": "node",
+        "esModuleInterop": true
     },
 }

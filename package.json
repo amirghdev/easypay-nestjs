@@ -1,6 +1,6 @@
 {
     "name": "easypay-nestjs",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "description": "easypay for iranian payment gateways",
     "main": "dist/index.js",
     "module": "dist/index.js",
@@ -20,14 +20,12 @@
     "author": "amirghdev",
     "license": "MIT",
     "dependencies": {
+        "@nestjs/common": "^10.0.0",
+        "@nestjs/axios": "^4.0.0",
         "axios": "^1.8.2"
     },
     "devDependencies": {
         "typescript": "^5.0.0"
-    },
-    "peerDependencies": {
-        "@nestjs/common": "^10.0.0",
-        "@nestjs/axios": "^4.0.0"
     },
     "repository": {
         "type": "git",

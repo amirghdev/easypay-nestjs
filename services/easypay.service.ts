@@ -21,6 +21,10 @@ export class EasypayService {
 
   public async requestPayment(options: RequestOptions): Promise<BaseResponse> {
     try {
+      if (!this.urlService || !this.requestService || !this.httpService || !this.errorService) {
+        throw new Error("Required services are not properly injected");
+      }
+
       const url = this.urlService.getRequestUrl(options.driver, options.sandbox, "request");
       const body = this.requestService.getRequestBody(options.driver, options);
 
@@ -56,6 +60,10 @@ export class EasypayService {
 
   public async verifyPayment(options: VerifyOptions): Promise<BaseResponse> {
     try {
+      if (!this.urlService || !this.verifyService || !this.httpService || !this.errorService) {
+        throw new Error("Required services are not properly injected");
+      }
+
       const url = this.urlService.getRequestUrl(options.driver, options.sandbox, "verify");
 
       const body = this.verifyService.getVerifyBody(options.driver, options);

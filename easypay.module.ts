@@ -11,8 +11,8 @@ import { NovinpalService } from "./services/novinpal.service";
 
 @Global()
 @Module({
-  imports: [HttpModule.register({ global: true })],
+  imports: [HttpModule],
   providers: [EasypayService, RequestService, VerifyService, ZibalService, ZarinpalService, UrlService, ErrorService, NovinpalService],
-  exports: [EasypayService, UrlService],
+  exports: [EasypayService, RequestService, VerifyService, ZibalService, ZarinpalService, UrlService, ErrorService, NovinpalService, HttpModule],
 })
 export class EasypayModule {}
