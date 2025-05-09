@@ -37,7 +37,7 @@ export class PaymentService {
 
 ```javascript
 const zarinpalRequest = await this.easypayService.requestPayment({
-  amount: 200000 // قیمت به ریال,
+  amount: 200000, // قیمت به ریال
   callbackUrl: "callback",
   driver: "ZARINPAL",
   merchantId: "your code",
