@@ -1,4 +1,4 @@
-export type Driver = "ZARINPAL" | "ZIBAL" | "NOVINPAL";
+export type Driver = "ZARINPAL" | "ZIBAL" | "NOVINPAL" | "BITPAY";
 
 export type RequestType = "request" | "verify" | "inquiry";
 

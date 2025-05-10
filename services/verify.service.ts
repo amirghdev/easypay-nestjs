@@ -8,6 +8,8 @@ import { ZibalService } from "./zibal.service";
 import { NovinpalVerifyOptions, NovinpalVerifyPaymentResponse } from "../verify/novinpal.verify";
 import { NovinpalService } from "./novinpal.service";
 import { BaseResponse } from "../types/general.type";
+import { BitpayVerifyOptions, BitpayVerifyPaymentResponse } from "verify/bitpay.verify";
+import { BitpayService } from "./bitpay.service";
 
 @Injectable()
 export class VerifyService {
@@ -15,6 +17,7 @@ export class VerifyService {
     private readonly zarinpalService: ZarinpalService,
     private readonly zibalService: ZibalService,
     private readonly novinpalService: NovinpalService,
+    private readonly bitpayService: BitpayService,
   ) {}
 
   public getVerifyBody(driver: Driver, options: VerifyOptions) {
@@ -27,6 +30,9 @@ export class VerifyService {
 
       case "NOVINPAL":
         return this.novinpalService.getVerifyBody(options as NovinpalVerifyOptions);
+
+      case "BITPAY":
+        return this.bitpayService.getVerifyBody(options as BitpayVerifyOptions);
     }
   }
 
@@ -40,6 +46,9 @@ export class VerifyService {
 
       case "NOVINPAL":
         return this.novinpalService.getVerifyResponse(response as NovinpalVerifyPaymentResponse);
+
+      case "BITPAY":
+        return this.bitpayService.getVerifyResponse(response as BitpayVerifyPaymentResponse);
     }
   }
 }

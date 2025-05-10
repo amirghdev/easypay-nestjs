@@ -1,4 +1,4 @@
-export type GatewayCallback = ZarinpalGatewayCallback | ZibalGatewayCallback | NovinpalGatewayCallback;
+export type GatewayCallback = ZarinpalGatewayCallback | ZibalGatewayCallback | NovinpalGatewayCallback | BitpayGatewayCallback;
 
 export interface ZarinpalGatewayCallback {
   port: "ZARINPAL";
@@ -21,4 +21,10 @@ export interface NovinpalGatewayCallback {
   code: number | string;
   invoiceNumber: number;
   amount: number;
+}
+
+export interface BitpayGatewayCallback {
+  port: "BITPAY";
+  trans_id: number;
+  id_get: number;
 }

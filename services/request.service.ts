@@ -7,6 +7,8 @@ import { ZibalService } from "./zibal.service";
 import { ZibalRequestOptions, ZibalRequestResponse } from "../request/zibal.request";
 import { NovinpalService } from "./novinpal.service";
 import { NovinpalRequestOptions, NovinpalRequestResponse } from "../request/novinpal.request";
+import { BitpayService } from "./bitpay.service";
+import { BitpayRequestOptions } from "request/bitpay.request";
 
 @Injectable()
 export class RequestService {
@@ -14,6 +16,7 @@ export class RequestService {
     private readonly zarinpalService: ZarinpalService,
     private readonly zibalService: ZibalService,
     private readonly novinpalService: NovinpalService,
+    private readonly bitpayService: BitpayService,
   ) {}
 
   public getRequestBody(driver: Driver, options: RequestOptions): object {
@@ -26,6 +29,9 @@ export class RequestService {
 
       case "NOVINPAL":
         return this.novinpalService.getRequestBody(options as NovinpalRequestOptions);
+
+      case "BITPAY":
+        return this.bitpayService.getRequestBody(options as BitpayRequestOptions);
     }
   }
 
@@ -39,6 +45,9 @@ export class RequestService {
 
       case "NOVINPAL":
         return this.novinpalService.getRequestResponse(response as NovinpalRequestResponse, sandbox);
+
+      case "BITPAY":
+        return this.bitpayService.getRequestResponse(response as number, sandbox);
     }
   }
 }

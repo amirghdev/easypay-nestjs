@@ -20,6 +20,10 @@ export class UrlService {
       SANDBOX: " https://api.novinpal.ir/invoice",
       PRODUCTION: " https://api.novinpal.ir/invoice",
     },
+    BITPAY: {
+      SANDBOX: "https://bitpay.ir/payment-test",
+      PRODUCTION: "https://bitpay.ir/payment",
+    },
   };
 
   private readonly GatewayUrls: {
@@ -39,6 +43,10 @@ export class UrlService {
       SANDBOX: " https://api.novinpal.ir/invoice/start",
       PRODUCTION: " https://api.novinpal.ir/invoice/start",
     },
+    BITPAY: {
+      SANDBOX: "https://bitpay.ir/payment-test",
+      PRODUCTION: "https://bitpay.ir/payment",
+    },
   };
 
   public getRequestUrl(driver: Driver, sandbox: boolean, type: RequestType) {
@@ -51,6 +59,13 @@ export class UrlService {
 
       case "NOVINPAL":
         return sandbox ? `${this.ApiUrls.NOVINPAL.SANDBOX}/${type}` : `${this.ApiUrls.NOVINPAL.PRODUCTION}/${type}`;
+
+      case "BITPAY":
+        if (type === "request") {
+          return sandbox ? `${this.ApiUrls.BITPAY.SANDBOX}/gateway-send` : `${this.ApiUrls.BITPAY.PRODUCTION}/gateway-send`;
+        } else if (type === "verify") {
+          return sandbox ? `${this.ApiUrls.BITPAY.SANDBOX}/gateway-result-second` : `${this.ApiUrls.BITPAY.PRODUCTION}/gateway-result-second`;
+        }
     }
   }
 
@@ -64,6 +79,11 @@ export class UrlService {
 
       case "NOVINPAL":
         return sandbox ? `${this.GatewayUrls.NOVINPAL.SANDBOX}/${authority}` : `${this.GatewayUrls.NOVINPAL.PRODUCTION}/${authority}`;
+
+      case "BITPAY":
+        return sandbox
+          ? `${this.GatewayUrls.BITPAY.SANDBOX}/gateway-${authority}-get`
+          : `${this.GatewayUrls.BITPAY.PRODUCTION}/gateway-${authority}-get`;
     }
   }
 }

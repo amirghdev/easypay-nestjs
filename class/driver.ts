@@ -1,3 +1,4 @@
+import { BitpayRequestOptions } from "request/bitpay.request";
 import { NovinpalRequestOptions, NovinpalRequestPaymentOptions, NovinpalRequestResponse } from "../request/novinpal.request";
 import { BaseRequestResponse } from "../request/request";
 import { ZarinpalRequestOptions, ZarinpalRequestPaymentOptions, ZarinpalRequestResponse } from "../request/zarinpal.request";
@@ -6,7 +7,7 @@ import { ZibalRequestPaymentOptions } from "../request/zibal.request";
 
 export abstract class BasicDriver {
   abstract getRequestBody(
-    options: ZarinpalRequestOptions | ZibalRequestOptions | NovinpalRequestOptions,
+    options: ZarinpalRequestOptions | ZibalRequestOptions | NovinpalRequestOptions | BitpayRequestOptions,
   ): ZarinpalRequestPaymentOptions | ZibalRequestPaymentOptions | NovinpalRequestPaymentOptions;
 
   abstract getRequestResponse(

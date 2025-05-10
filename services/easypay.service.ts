@@ -3,9 +3,9 @@ import { HttpService } from "@nestjs/axios";
 import { RequestService } from "./request.service";
 import { AxiosError } from "axios";
 import { VerifyService } from "./verify.service";
-import { RequestOptions, BaseRequestResponse } from "../request/request";
+import { RequestOptions } from "../request/request";
 import { UrlService } from "./url.service";
-import { BaseVerifyResponse, VerifyOptions } from "../verify/verify";
+import { VerifyOptions } from "../verify/verify";
 import { ErrorService } from "./error.service";
 import { BaseResponse } from "../types/general.type";
 
@@ -26,9 +26,16 @@ export class EasypayService {
       }
 
       const url = this.urlService.getRequestUrl(options.driver, options.sandbox, "request");
+
+      console.log("url from request", url);
+
       const body = this.requestService.getRequestBody(options.driver, options);
 
+      console.log("body from request", body);
+
       const { data } = await this.httpService.axiosRef.post(url, body);
+
+      console.log("data from request", data);
 
       const response = this.requestService.getRequestResponse(options.driver, data, options.sandbox);
 
@@ -66,11 +73,19 @@ export class EasypayService {
 
       const url = this.urlService.getRequestUrl(options.driver, options.sandbox, "verify");
 
+      console.log("url from verify", url);
+
       const body = this.verifyService.getVerifyBody(options.driver, options);
+
+      console.log("body from verify", body);
 
       const { data } = await this.httpService.axiosRef.post(url, body);
 
+      console.log("data from verify", data);
+
       const response = this.verifyService.getVerifyResponse(options.driver, data);
+
+      console.log("response from verify", response);
 
       response.raw = data;
 
