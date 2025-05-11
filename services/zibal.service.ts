@@ -4,6 +4,8 @@ import { BasicDriver } from "../class/driver";
 import { ZibalVerifyOptions, ZibalVerifyPaymentOptions, ZibalVerifyPaymentResponse } from "../verify/zibal.verify";
 import { UrlService } from "./url.service";
 import { BaseResponse } from "../types/general.type";
+import { ZibalInquiryPaymentOptions, ZibalInquiryResponse } from "inquiry/zibal.inquiry";
+import { ZibalInquiryOptions } from "inquiry/zibal.inquiry";
 
 @Injectable()
 export class ZibalService extends BasicDriver {
@@ -72,6 +74,34 @@ export class ZibalService extends BasicDriver {
             orderId: response.orderId,
           }
         : null,
+    };
+  }
+
+  public getInquiryBody(options: ZibalInquiryOptions): ZibalInquiryPaymentOptions {
+    return {
+      merchant: options.merchant.toString(),
+      trackId: +options.trackId,
+    };
+  }
+
+  public getInquiryResponse(response: ZibalInquiryResponse): BaseResponse {
+    return {
+      code: response.result,
+      success: response.result === 100,
+      message: response.message,
+      data: {
+        createdAt: response.createdAt,
+        paidAt: response.paidAt,
+        verifiedAt: response.verifiedAt,
+        cardNumber: response.cardNumber,
+        status: response.status,
+        amount: response.amount,
+        refNumber: response.refNumber,
+        description: response.description,
+        orderId: response.orderId,
+        wage: response.wage,
+        result: response.result,
+      },
     };
   }
 }
