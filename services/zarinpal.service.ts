@@ -5,6 +5,8 @@ import { ZarinpalRequestOptions, ZarinpalRequestPaymentOptions, ZarinpalRequestR
 import { BasicDriver } from "../class/driver";
 import { UrlService } from "./url.service";
 import { RequestError } from "../request/request";
+import { ZarinpalInquiryPaymentOptions, ZarinpalInquiryResponse } from "inquiry/zarinpal.inquiry";
+import { ZarinpalInquiryOptions } from "inquiry";
 
 @Injectable()
 export class ZarinpalService extends BasicDriver {
@@ -70,6 +72,22 @@ export class ZarinpalService extends BasicDriver {
     return {
       code: response?.errors?.code,
       message: response?.errors?.message,
+    };
+  }
+
+  getInquiryBody(options: ZarinpalInquiryOptions): ZarinpalInquiryPaymentOptions {
+    return {
+      merchant_id: options.merchant_id.toString(),
+      authority: options.authority.toString(),
+    };
+  }
+
+  getInquiryResponse(response: ZarinpalInquiryResponse): BaseResponse {
+    return {
+      code: response.data.code,
+      message: response.data.message,
+      success: true,
+      data: { status: response.data.status },
     };
   }
 }

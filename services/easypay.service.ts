@@ -3,11 +3,13 @@ import { HttpService } from "@nestjs/axios";
 import { RequestService } from "./request.service";
 import { AxiosError } from "axios";
 import { VerifyService } from "./verify.service";
-import { RequestOptions, BaseRequestResponse } from "../request/request";
+import { RequestOptions } from "../request/request";
 import { UrlService } from "./url.service";
-import { BaseVerifyResponse, VerifyOptions } from "../verify/verify";
+import { VerifyOptions } from "../verify/verify";
 import { ErrorService } from "./error.service";
 import { BaseResponse } from "../types/general.type";
+import { InquiryOptions } from "../inquiry/inquiry";
+import { InquiryService } from "./inquiry.service";
 
 @Injectable()
 export class EasypayService {
@@ -17,6 +19,7 @@ export class EasypayService {
     private readonly verifyService: VerifyService,
     private readonly urlService: UrlService,
     private readonly errorService: ErrorService,
+    private readonly inquiryService: InquiryService,
   ) {}
 
   public async requestPayment(options: RequestOptions): Promise<BaseResponse> {
@@ -94,6 +97,24 @@ export class EasypayService {
         message: error?.message || "An unknown error occurred",
         raw: error,
       };
+    }
+  }
+
+  public async inquiryPayment(options: InquiryOptions): Promise<BaseResponse> {
+    try {
+      const url = this.urlService.getRequestUrl(options.driver, options.sandbox, "inquiry");
+
+      const body = this.inquiryService.getBody(options);
+
+      const { data } = await this.httpService.axiosRef.post(url, body);
+
+      const response = this.inquiryService.getInquiryResponse(options.driver, data);
+
+      response.raw = data;
+
+      return response;
+    } catch (error) {
+      console.log("inquiry error", JSON.stringify(error));
     }
   }
 }

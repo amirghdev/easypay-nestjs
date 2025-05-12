@@ -8,11 +8,33 @@ import { ZarinpalService } from "./services/zarinpal.service";
 import { UrlService } from "./services/url.service";
 import { ErrorService } from "./services/error.service";
 import { NovinpalService } from "./services/novinpal.service";
+import { InquiryService } from "services/inquiry.service";
 
 @Global()
 @Module({
   imports: [HttpModule],
-  providers: [EasypayService, RequestService, VerifyService, ZibalService, ZarinpalService, UrlService, ErrorService, NovinpalService],
-  exports: [EasypayService, RequestService, VerifyService, ZibalService, ZarinpalService, UrlService, ErrorService, NovinpalService, HttpModule],
+  providers: [
+    EasypayService,
+    RequestService,
+    VerifyService,
+    ZibalService,
+    ZarinpalService,
+    UrlService,
+    ErrorService,
+    NovinpalService,
+    InquiryService,
+  ],
+  exports: [
+    EasypayService,
+    RequestService,
+    VerifyService,
+    ZibalService,
+    ZarinpalService,
+    UrlService,
+    ErrorService,
+    NovinpalService,
+    HttpModule,
+    InquiryService,
+  ],
 })
 export class EasypayModule {}
