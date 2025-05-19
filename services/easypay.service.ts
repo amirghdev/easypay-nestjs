@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 import { VerifyService } from "./verify.service";
 import { BaseRequestResponse, RequestOptions, RequestData } from "../request/request";
 import { UrlService } from "./url.service";
-import { VerifyOptions } from "../verify/verify";
+import { BaseVerifyResponse, VerifyData, VerifyOptions } from "../verify/verify";
 import { ErrorService } from "./error.service";
 import { BaseResponse } from "../types/general.type";
 import { InquiryOptions } from "../inquiry/inquiry";
@@ -61,7 +61,7 @@ export class EasypayService {
     }
   }
 
-  public async verifyPayment(options: VerifyOptions): Promise<BaseResponse> {
+  public async verifyPayment<T extends VerifyData>(options: VerifyOptions): Promise<BaseVerifyResponse<T>> {
     try {
       if (!this.urlService || !this.verifyService || !this.httpService || !this.errorService) {
         throw new Error("Required services are not properly injected");
@@ -73,7 +73,7 @@ export class EasypayService {
 
       const { data } = await this.httpService.axiosRef.post(url, body);
 
-      const response = this.verifyService.getVerifyResponse(options.driver, data);
+      const response = this.verifyService.getVerifyResponse<T>(options.driver, data);
 
       response.raw = data;
 
@@ -84,19 +84,19 @@ export class EasypayService {
         const errorResponse = this.errorService.getVerifyError(error, options.driver);
         return {
           success: false,
-          data: null,
+          data: undefined,
           code: errorResponse.code,
           message: errorResponse.message,
           raw: error?.response?.data,
-        };
+        } as BaseVerifyResponse<T>;
       }
       return {
         success: false,
-        data: null,
+        data: undefined,
         code: -1,
         message: error?.message || "An unknown error occurred",
         raw: error,
-      };
+      } as BaseVerifyResponse<T>;
     }
   }
 

@@ -1,5 +1,10 @@
 import { BaseResponse } from "../types/general.type";
-import { ZarinpalVerifyOptions, ZarinpalVerifyPaymentOptions, ZarinpalVerifyPaymentResponse } from "../verify/zarinpal.verify";
+import {
+  ZarinpalVerifyOptions,
+  ZarinpalVerifyPaymentOptions,
+  ZarinpalVerifyPaymentResponse,
+  ZarinpalVerifyPaymentResponseExtraData,
+} from "../verify/zarinpal.verify";
 import { Injectable } from "@nestjs/common";
 import {
   ZarinpalRequestOptions,
@@ -12,6 +17,7 @@ import { UrlService } from "./url.service";
 import { BaseRequestResponse, RequestError } from "../request/request";
 import { ZarinpalInquiryPaymentOptions, ZarinpalInquiryResponse } from "inquiry/zarinpal.inquiry";
 import { ZarinpalInquiryOptions } from "inquiry";
+import { BaseVerifyResponse } from "verify/verify";
 
 @Injectable()
 export class ZarinpalService extends BasicDriver {
@@ -58,7 +64,7 @@ export class ZarinpalService extends BasicDriver {
     };
   }
 
-  getVerifyResponse(response: ZarinpalVerifyPaymentResponse): BaseResponse {
+  getVerifyResponse(response: ZarinpalVerifyPaymentResponse): BaseVerifyResponse<ZarinpalVerifyPaymentResponseExtraData> {
     return {
       code: response.data.code,
       message: response.data.message,

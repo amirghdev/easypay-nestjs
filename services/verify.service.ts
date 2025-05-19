@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Driver } from "../types/general.type";
 import { ZarinpalService } from "./zarinpal.service";
-import { VerifyOptions } from "../verify/verify";
+import { BaseVerifyResponse, VerifyData, VerifyOptions } from "../verify/verify";
 import { ZarinpalVerifyOptions, ZarinpalVerifyPaymentResponse } from "../verify/zarinpal.verify";
 import { ZibalVerifyOptions, ZibalVerifyPaymentResponse } from "../verify/zibal.verify";
 import { ZibalService } from "./zibal.service";
@@ -30,16 +30,16 @@ export class VerifyService {
     }
   }
 
-  public getVerifyResponse(driver: Driver, response: object): BaseResponse {
+  public getVerifyResponse<T extends VerifyData>(driver: Driver, response: object): BaseVerifyResponse<T> {
     switch (driver) {
       case "ZARINPAL":
-        return this.zarinpalService.getVerifyResponse(response as ZarinpalVerifyPaymentResponse);
+        return this.zarinpalService.getVerifyResponse(response as ZarinpalVerifyPaymentResponse) as BaseVerifyResponse<T>;
 
       case "ZIBAL":
-        return this.zibalService.getVerifyResponse(response as ZibalVerifyPaymentResponse);
+        return this.zibalService.getVerifyResponse(response as ZibalVerifyPaymentResponse) as BaseVerifyResponse<T>;
 
       case "NOVINPAL":
-        return this.novinpalService.getVerifyResponse(response as NovinpalVerifyPaymentResponse);
+        return this.novinpalService.getVerifyResponse(response as NovinpalVerifyPaymentResponse) as BaseVerifyResponse<T>;
     }
   }
 }

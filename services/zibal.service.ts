@@ -1,12 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { ZibalRequestOptions, ZibalRequestPaymentOptions, ZibalRequestResponse, ZibalRequestResponseExtraData } from "../request/zibal.request";
 import { BasicDriver } from "../class/driver";
-import { ZibalVerifyOptions, ZibalVerifyPaymentOptions, ZibalVerifyPaymentResponse } from "../verify/zibal.verify";
+import {
+  ZibalVerifyOptions,
+  ZibalVerifyPaymentOptions,
+  ZibalVerifyPaymentResponse,
+  ZibalVerifyPaymentResponseExtraData,
+} from "../verify/zibal.verify";
 import { UrlService } from "./url.service";
 import { BaseResponse } from "../types/general.type";
 import { ZibalInquiryPaymentOptions, ZibalInquiryResponse } from "inquiry/zibal.inquiry";
 import { ZibalInquiryOptions } from "inquiry/zibal.inquiry";
 import { BaseRequestResponse } from "request/request";
+import { BaseVerifyResponse } from "verify/verify";
 
 @Injectable()
 export class ZibalService extends BasicDriver {
@@ -58,7 +64,7 @@ export class ZibalService extends BasicDriver {
     };
   }
 
-  public getVerifyResponse(response: ZibalVerifyPaymentResponse): BaseResponse {
+  public getVerifyResponse(response: ZibalVerifyPaymentResponse): BaseVerifyResponse<ZibalVerifyPaymentResponseExtraData> {
     const isSuccess = response.result === 100 || response.result === 201;
     return {
       code: response.result,
