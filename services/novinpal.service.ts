@@ -6,6 +6,7 @@ import {
   NovinpalRequestOptions,
   NovinpalRequestPaymentOptions,
   NovinpalRequestResponse,
+  NovinpalRequestResponseExtraData,
 } from "../request/novinpal.request";
 import {
   NovinpalVerifyOptions,
@@ -14,6 +15,7 @@ import {
   NovinpalVerifyPaymentResponseError,
 } from "../verify/novinpal.verify";
 import { BaseResponse } from "../types/general.type";
+import { BaseRequestResponse } from "request/request";
 
 @Injectable()
 export class NovinpalService extends BasicDriver {
@@ -33,12 +35,12 @@ export class NovinpalService extends BasicDriver {
     };
   }
 
-  getRequestResponse(response: NovinpalRequestResponse, sandbox: boolean): BaseResponse {
+  getRequestResponse(response: NovinpalRequestResponse, sandbox: boolean): BaseRequestResponse<NovinpalRequestResponseExtraData> {
     const isSuccess = response.status === 1;
     return {
       data: {
         url: this.urlService.getGatewayUrl("NOVINPAL", sandbox, response.refId),
-        refId: response.refId,
+        refId: +response.refId,
       },
       success: isSuccess,
       code: response.status,

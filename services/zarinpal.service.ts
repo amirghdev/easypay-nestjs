@@ -1,10 +1,15 @@
 import { BaseResponse } from "../types/general.type";
 import { ZarinpalVerifyOptions, ZarinpalVerifyPaymentOptions, ZarinpalVerifyPaymentResponse } from "../verify/zarinpal.verify";
 import { Injectable } from "@nestjs/common";
-import { ZarinpalRequestOptions, ZarinpalRequestPaymentOptions, ZarinpalRequestResponse } from "../request/zarinpal.request";
+import {
+  ZarinpalRequestOptions,
+  ZarinpalRequestPaymentOptions,
+  ZarinpalRequestResponse,
+  ZarinpalRequestResponseExtraData,
+} from "../request/zarinpal.request";
 import { BasicDriver } from "../class/driver";
 import { UrlService } from "./url.service";
-import { RequestError } from "../request/request";
+import { BaseRequestResponse, RequestError } from "../request/request";
 import { ZarinpalInquiryPaymentOptions, ZarinpalInquiryResponse } from "inquiry/zarinpal.inquiry";
 import { ZarinpalInquiryOptions } from "inquiry";
 
@@ -24,7 +29,7 @@ export class ZarinpalService extends BasicDriver {
     };
   }
 
-  getRequestResponse(response: ZarinpalRequestResponse, sandbox: boolean): BaseResponse {
+  getRequestResponse(response: ZarinpalRequestResponse, sandbox: boolean): BaseRequestResponse<ZarinpalRequestResponseExtraData> {
     return {
       code: response.data.code,
       message: response.data.message,

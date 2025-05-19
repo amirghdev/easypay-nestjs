@@ -1,7 +1,17 @@
-import { NovinpalRequestOptions, NovinpalRequestPaymentOptions, NovinpalRequestResponse } from "../request/novinpal.request";
+import {
+  NovinpalRequestOptions,
+  NovinpalRequestPaymentOptions,
+  NovinpalRequestResponse,
+  NovinpalRequestResponseExtraData,
+} from "../request/novinpal.request";
 import { BaseRequestResponse } from "../request/request";
-import { ZarinpalRequestOptions, ZarinpalRequestPaymentOptions, ZarinpalRequestResponse } from "../request/zarinpal.request";
-import { ZibalRequestOptions, ZibalRequestResponse } from "../request/zibal.request";
+import {
+  ZarinpalRequestOptions,
+  ZarinpalRequestPaymentOptions,
+  ZarinpalRequestResponse,
+  ZarinpalRequestResponseExtraData,
+} from "../request/zarinpal.request";
+import { ZibalRequestOptions, ZibalRequestResponse, ZibalRequestResponseExtraData } from "../request/zibal.request";
 import { ZibalRequestPaymentOptions } from "../request/zibal.request";
 
 export abstract class BasicDriver {
@@ -12,5 +22,5 @@ export abstract class BasicDriver {
   abstract getRequestResponse(
     response: ZarinpalRequestResponse | ZibalRequestResponse | NovinpalRequestResponse,
     sandbox: boolean,
-  ): BaseRequestResponse;
+  ): BaseRequestResponse<ZarinpalRequestResponseExtraData | ZibalRequestResponseExtraData | NovinpalRequestResponseExtraData>;
 }

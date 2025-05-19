@@ -3,13 +3,14 @@ import { HttpService } from "@nestjs/axios";
 import { RequestService } from "./request.service";
 import { AxiosError } from "axios";
 import { VerifyService } from "./verify.service";
-import { RequestOptions } from "../request/request";
+import { BaseRequestResponse, RequestOptions, RequestData } from "../request/request";
 import { UrlService } from "./url.service";
 import { VerifyOptions } from "../verify/verify";
 import { ErrorService } from "./error.service";
 import { BaseResponse } from "../types/general.type";
 import { InquiryOptions } from "../inquiry/inquiry";
 import { InquiryService } from "./inquiry.service";
+import { NovinpalRequestResponseExtraData, ZarinpalRequestResponseExtraData, ZibalRequestResponseExtraData } from "request";
 
 @Injectable()
 export class EasypayService {
@@ -22,7 +23,7 @@ export class EasypayService {
     private readonly inquiryService: InquiryService,
   ) {}
 
-  public async requestPayment(options: RequestOptions): Promise<BaseResponse> {
+  public async requestPayment<T extends RequestData>(options: RequestOptions): Promise<BaseRequestResponse<T>> {
     try {
       if (!this.urlService || !this.requestService || !this.httpService || !this.errorService) {
         throw new Error("Required services are not properly injected");
@@ -33,8 +34,7 @@ export class EasypayService {
 
       const { data } = await this.httpService.axiosRef.post(url, body);
 
-      const response = this.requestService.getRequestResponse(options.driver, data, options.sandbox);
-
+      const response = this.requestService.getRequestResponse<T>(options.driver, data, options.sandbox);
       response.raw = data;
 
       return response;
@@ -45,19 +45,19 @@ export class EasypayService {
 
         return {
           success: false,
-          data: null,
+          data: undefined,
           code: errorResponse.code,
           message: errorResponse.message,
           raw: error?.response?.data,
-        };
+        } as BaseRequestResponse<T>;
       }
       return {
         success: false,
-        data: null,
+        data: undefined,
         code: -1,
         message: error?.message || "An unknown error occurred",
         raw: error,
-      };
+      } as BaseRequestResponse<T>;
     }
   }
 
