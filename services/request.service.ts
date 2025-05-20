@@ -32,27 +32,15 @@ export class RequestService {
   public getRequestResponse<T extends RequestData>(driver: Driver, response: unknown, sandbox: boolean): BaseRequestResponse<T> {
     switch (driver) {
       case "ZARINPAL": {
-        const result = this.zarinpalService.getRequestResponse(response as ZarinpalRequestResponse, sandbox);
-        return {
-          ...result,
-          data: result.data as T,
-        };
+        return this.zarinpalService.getRequestResponse(response as ZarinpalRequestResponse, sandbox) as BaseRequestResponse<T>;
       }
 
       case "ZIBAL": {
-        const result = this.zibalService.getRequestResponse(response as ZibalRequestResponse, sandbox);
-        return {
-          ...result,
-          data: result.data as T,
-        };
+        return this.zibalService.getRequestResponse(response as ZibalRequestResponse, sandbox) as BaseRequestResponse<T>;
       }
 
       case "NOVINPAL": {
-        const result = this.novinpalService.getRequestResponse(response as NovinpalRequestResponse, sandbox);
-        return {
-          ...result,
-          data: result.data as T,
-        };
+        return this.novinpalService.getRequestResponse(response as NovinpalRequestResponse, sandbox) as BaseRequestResponse<T>;
       }
     }
   }

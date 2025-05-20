@@ -15,9 +15,10 @@ import {
 import { BasicDriver } from "../class/driver";
 import { UrlService } from "./url.service";
 import { BaseRequestResponse, RequestError } from "../request/request";
-import { ZarinpalInquiryPaymentOptions, ZarinpalInquiryResponse } from "inquiry/zarinpal.inquiry";
+import { ZarinpalInquiryPaymentOptions, ZarinpalInquiryResponse, ZarinpalInquiryResponseExtraData } from "inquiry/zarinpal.inquiry";
 import { ZarinpalInquiryOptions } from "inquiry";
 import { BaseVerifyResponse } from "verify/verify";
+import { BaseInquiryResponse } from "inquiry/inquiry";
 
 @Injectable()
 export class ZarinpalService extends BasicDriver {
@@ -93,7 +94,7 @@ export class ZarinpalService extends BasicDriver {
     };
   }
 
-  getInquiryResponse(response: ZarinpalInquiryResponse): BaseResponse {
+  getInquiryResponse(response: ZarinpalInquiryResponse): BaseInquiryResponse<ZarinpalInquiryResponseExtraData> {
     return {
       code: response.data.code,
       message: response.data.message,

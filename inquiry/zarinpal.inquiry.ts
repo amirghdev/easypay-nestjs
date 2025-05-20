@@ -24,3 +24,7 @@ export interface ZarinpalInquiryResponseError {
   code: number;
   validations: [];
 }
+
+export interface ZarinpalInquiryResponseExtraData {
+  status: "VERIFIED " | "PAID " | "IN_BANK " | "FAILED " | "REVERSED ";
+}

@@ -9,10 +9,11 @@ import {
 } from "../verify/zibal.verify";
 import { UrlService } from "./url.service";
 import { BaseResponse } from "../types/general.type";
-import { ZibalInquiryPaymentOptions, ZibalInquiryResponse } from "inquiry/zibal.inquiry";
+import { ZibalInquiryPaymentOptions, ZibalInquiryResponse, ZibalInquiryResponseExtraData } from "inquiry/zibal.inquiry";
 import { ZibalInquiryOptions } from "inquiry/zibal.inquiry";
 import { BaseRequestResponse } from "request/request";
 import { BaseVerifyResponse } from "verify/verify";
+import { BaseInquiryResponse } from "inquiry/inquiry";
 
 @Injectable()
 export class ZibalService extends BasicDriver {
@@ -91,7 +92,7 @@ export class ZibalService extends BasicDriver {
     };
   }
 
-  public getInquiryResponse(response: ZibalInquiryResponse): BaseResponse {
+  public getInquiryResponse(response: ZibalInquiryResponse): BaseInquiryResponse<ZibalInquiryResponseExtraData> {
     return {
       code: response.result,
       success: response.result === 100,
@@ -107,7 +108,6 @@ export class ZibalService extends BasicDriver {
         description: response.description,
         orderId: response.orderId,
         wage: response.wage,
-        result: response.result,
       },
     };
   }

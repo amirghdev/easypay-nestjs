@@ -8,7 +8,7 @@ import { UrlService } from "./url.service";
 import { BaseVerifyResponse, VerifyData, VerifyOptions } from "../verify/verify";
 import { ErrorService } from "./error.service";
 import { BaseResponse } from "../types/general.type";
-import { InquiryOptions } from "../inquiry/inquiry";
+import { BaseInquiryResponse, InquiryData, InquiryOptions } from "../inquiry/inquiry";
 import { InquiryService } from "./inquiry.service";
 import { NovinpalRequestResponseExtraData, ZarinpalRequestResponseExtraData, ZibalRequestResponseExtraData } from "request";
 
@@ -100,7 +100,7 @@ export class EasypayService {
     }
   }
 
-  public async inquiryPayment(options: InquiryOptions): Promise<BaseResponse> {
+  public async inquiryPayment<T extends InquiryData>(options: InquiryOptions): Promise<BaseInquiryResponse<T>> {
     try {
       const url = this.urlService.getRequestUrl(options.driver, options.sandbox, "inquiry");
 
@@ -108,7 +108,7 @@ export class EasypayService {
 
       const { data } = await this.httpService.axiosRef.post(url, body);
 
-      const response = this.inquiryService.getInquiryResponse(options.driver, data);
+      const response = this.inquiryService.getInquiryResponse<T>(options.driver, data);
 
       response.raw = data;
 
