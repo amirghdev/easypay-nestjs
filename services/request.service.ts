@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { BaseResponse, Driver } from "../types/general.type";
 import { ZarinpalService } from "./zarinpal.service";
-import { RequestOptions } from "../request/request";
+import { BaseRequestResponse, RequestData, RequestOptions } from "../request/request";
 import { ZarinpalRequestOptions, ZarinpalRequestResponse } from "../request/zarinpal.request";
 import { ZibalService } from "./zibal.service";
 import { ZibalRequestOptions, ZibalRequestResponse } from "../request/zibal.request";
@@ -29,16 +29,19 @@ export class RequestService {
     }
   }
 
-  public getRequestResponse(driver: Driver, response: unknown, sandbox: boolean): BaseResponse {
+  public getRequestResponse<T extends RequestData>(driver: Driver, response: unknown, sandbox: boolean): BaseRequestResponse<T> {
     switch (driver) {
-      case "ZARINPAL":
-        return this.zarinpalService.getRequestResponse(response as ZarinpalRequestResponse, sandbox);
+      case "ZARINPAL": {
+        return this.zarinpalService.getRequestResponse(response as ZarinpalRequestResponse, sandbox) as BaseRequestResponse<T>;
+      }
 
-      case "ZIBAL":
-        return this.zibalService.getRequestResponse(response as ZibalRequestResponse, sandbox);
+      case "ZIBAL": {
+        return this.zibalService.getRequestResponse(response as ZibalRequestResponse, sandbox) as BaseRequestResponse<T>;
+      }
 
-      case "NOVINPAL":
-        return this.novinpalService.getRequestResponse(response as NovinpalRequestResponse, sandbox);
+      case "NOVINPAL": {
+        return this.novinpalService.getRequestResponse(response as NovinpalRequestResponse, sandbox) as BaseRequestResponse<T>;
+      }
     }
   }
 }
