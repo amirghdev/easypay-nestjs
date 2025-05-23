@@ -7,7 +7,7 @@ export type InquiryOptions = ZarinpalInquiryOptions | ZibalInquiryOptions;
 
 export type InquiryData = ZibalInquiryResponseExtraData | ZarinpalInquiryResponseExtraData;
 
-export interface BaseInquiryResponse<T> {
+export interface BaseInquiryResponse<T extends InquiryData> {
   success: boolean;
   code?: number;
   message?: string;

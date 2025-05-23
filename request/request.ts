@@ -11,7 +11,7 @@ export interface BaseRequestOptions {
 
 export type RequestOptions = ZarinpalRequestOptions | ZibalRequestOptions | NovinpalRequestOptions;
 
-export interface BaseRequestResponse<T> {
+export interface BaseRequestResponse<T extends RequestData> {
   success: boolean;
   code?: number;
   message?: string;
