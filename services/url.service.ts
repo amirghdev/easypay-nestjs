@@ -17,8 +17,8 @@ export class UrlService {
       PRODUCTION: "https://gateway.zibal.ir/v1",
     },
     NOVINPAL: {
-      SANDBOX: " https://api.novinpal.ir/invoice",
-      PRODUCTION: " https://api.novinpal.ir/invoice",
+      SANDBOX: "https://api.novinpal.ir/invoice",
+      PRODUCTION: "https://api.novinpal.ir/invoice",
     },
   };
 
@@ -36,8 +36,8 @@ export class UrlService {
       PRODUCTION: "https://gateway.zibal.ir/start",
     },
     NOVINPAL: {
-      SANDBOX: " https://api.novinpal.ir/invoice/start",
-      PRODUCTION: " https://api.novinpal.ir/invoice/start",
+      SANDBOX: "https://api.novinpal.ir/invoice/start",
+      PRODUCTION: "https://api.novinpal.ir/invoice/start",
     },
   };
 

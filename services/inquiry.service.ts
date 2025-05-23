@@ -1,6 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { UrlService } from "./url.service";
-import { InquiryDriver, InquiryOptions, ZarinpalInquiryOptions, ZarinpalInquiryResponse, ZibalInquiryOptions, ZibalInquiryResponse } from "inquiry";
+import {
+  BaseInquiryResponse,
+  InquiryData,
+  InquiryDriver,
+  InquiryOptions,
+  ZarinpalInquiryOptions,
+  ZarinpalInquiryResponse,
+  ZibalInquiryOptions,
+  ZibalInquiryResponse,
+} from "inquiry";
 import { ZarinpalService } from "./zarinpal.service";
 import { ZibalService } from "./zibal.service";
 import { Driver } from "types";
@@ -22,12 +31,12 @@ export class InquiryService {
     }
   }
 
-  public getInquiryResponse(driver: InquiryDriver, response: unknown) {
+  public getInquiryResponse<T extends InquiryData>(driver: InquiryDriver, response: unknown): BaseInquiryResponse<T> {
     switch (driver) {
       case "ZARINPAL":
-        return this.zarinpalService.getInquiryResponse(response as ZarinpalInquiryResponse);
+        return this.zarinpalService.getInquiryResponse(response as ZarinpalInquiryResponse) as BaseInquiryResponse<T>;
       case "ZIBAL":
-        return this.zibalService.getInquiryResponse(response as ZibalInquiryResponse);
+        return this.zibalService.getInquiryResponse(response as ZibalInquiryResponse) as BaseInquiryResponse<T>;
     }
   }
 }

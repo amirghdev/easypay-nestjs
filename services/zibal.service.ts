@@ -1,11 +1,19 @@
 import { Injectable } from "@nestjs/common";
-import { ZibalRequestOptions, ZibalRequestPaymentOptions, ZibalRequestResponse } from "../request/zibal.request";
+import { ZibalRequestOptions, ZibalRequestPaymentOptions, ZibalRequestResponse, ZibalRequestResponseExtraData } from "../request/zibal.request";
 import { BasicDriver } from "../class/driver";
-import { ZibalVerifyOptions, ZibalVerifyPaymentOptions, ZibalVerifyPaymentResponse } from "../verify/zibal.verify";
+import {
+  ZibalVerifyOptions,
+  ZibalVerifyPaymentOptions,
+  ZibalVerifyPaymentResponse,
+  ZibalVerifyPaymentResponseExtraData,
+} from "../verify/zibal.verify";
 import { UrlService } from "./url.service";
 import { BaseResponse } from "../types/general.type";
-import { ZibalInquiryPaymentOptions, ZibalInquiryResponse } from "inquiry/zibal.inquiry";
+import { ZibalInquiryPaymentOptions, ZibalInquiryResponse, ZibalInquiryResponseExtraData } from "inquiry/zibal.inquiry";
 import { ZibalInquiryOptions } from "inquiry/zibal.inquiry";
+import { BaseRequestResponse } from "request/request";
+import { BaseVerifyResponse } from "verify/verify";
+import { BaseInquiryResponse } from "inquiry/inquiry";
 
 @Injectable()
 export class ZibalService extends BasicDriver {
@@ -35,7 +43,7 @@ export class ZibalService extends BasicDriver {
     };
   }
 
-  public getRequestResponse(response: ZibalRequestResponse, sandbox: boolean): BaseResponse {
+  public getRequestResponse(response: ZibalRequestResponse, sandbox: boolean): BaseRequestResponse<ZibalRequestResponseExtraData> {
     const isSuccess = response.result === 100;
     return {
       code: response.result,
@@ -57,7 +65,7 @@ export class ZibalService extends BasicDriver {
     };
   }
 
-  public getVerifyResponse(response: ZibalVerifyPaymentResponse): BaseResponse {
+  public getVerifyResponse(response: ZibalVerifyPaymentResponse): BaseVerifyResponse<ZibalVerifyPaymentResponseExtraData> {
     const isSuccess = response.result === 100 || response.result === 201;
     return {
       code: response.result,
@@ -84,7 +92,7 @@ export class ZibalService extends BasicDriver {
     };
   }
 
-  public getInquiryResponse(response: ZibalInquiryResponse): BaseResponse {
+  public getInquiryResponse(response: ZibalInquiryResponse): BaseInquiryResponse<ZibalInquiryResponseExtraData> {
     return {
       code: response.result,
       success: response.result === 100,
@@ -100,7 +108,6 @@ export class ZibalService extends BasicDriver {
         description: response.description,
         orderId: response.orderId,
         wage: response.wage,
-        result: response.result,
       },
     };
   }
