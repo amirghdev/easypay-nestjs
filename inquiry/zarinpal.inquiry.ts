@@ -21,8 +21,10 @@ export interface ZarinpalInquiryResponseData {
 
 export interface ZarinpalInquiryResponseError {
   message: string;
-  code: number;
-  validations: [];
+  errors: {
+    authority: string[];
+    merchant_id: string[];
+  };
 }
 
 export interface ZarinpalInquiryResponseExtraData {

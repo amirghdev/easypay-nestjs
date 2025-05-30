@@ -7,10 +7,9 @@ import { BaseRequestResponse, RequestOptions, RequestData } from "../request/req
 import { UrlService } from "./url.service";
 import { BaseVerifyResponse, VerifyData, VerifyOptions } from "../verify/verify";
 import { ErrorService } from "./error.service";
-import { BaseResponse } from "../types/general.type";
 import { BaseInquiryResponse, InquiryData, InquiryOptions } from "../inquiry/inquiry";
 import { InquiryService } from "./inquiry.service";
-import { NovinpalRequestResponseExtraData, ZarinpalRequestResponseExtraData, ZibalRequestResponseExtraData } from "request";
+import { BasePaymentStrategy } from "types/payment.strategy";
 
 @Injectable()
 export class EasypayService {
@@ -116,5 +115,25 @@ export class EasypayService {
     } catch (error) {
       console.log("inquiry error", JSON.stringify(error));
     }
+  }
+
+  //? strategy pattern
+
+  private strategy: BasePaymentStrategy<any, any, any>;
+
+  public setStrategy<T extends RequestData, V extends VerifyData, I extends InquiryData>(strategy: BasePaymentStrategy<T, V, I>) {
+    this.strategy = strategy;
+  }
+
+  async requestPaymentStrategy<T extends RequestData>(options: RequestOptions): Promise<BaseRequestResponse<T>> {
+    return this.strategy.requestPayment(options);
+  }
+
+  async verifyPaymentStrategy<T extends VerifyData>(options: VerifyOptions): Promise<BaseVerifyResponse<T>> {
+    return this.strategy.verifyPayment(options);
+  }
+
+  async inquiryPaymentStrategy<T extends InquiryData>(options: InquiryOptions): Promise<BaseInquiryResponse<T>> {
+    return this.strategy.inquiryPayment(options);
   }
 }
