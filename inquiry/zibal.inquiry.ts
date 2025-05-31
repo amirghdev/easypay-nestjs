@@ -39,3 +39,8 @@ export interface ZibalInquiryResponseExtraData {
   orderId?: string;
   wage: 0 | 1 | 2;
 }
+
+export interface ZibalInquiryResponseError {
+  result: ZibalInquiryResult;
+  message: string;
+}

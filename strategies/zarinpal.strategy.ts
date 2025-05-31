@@ -52,7 +52,17 @@ export class ZarinpalStrategy
         },
       };
     } catch (error) {
-      return this.handleError(error as AxiosError, "request");
+      if (error instanceof AxiosError) {
+        return this.handleError(error as AxiosError, "request");
+      } else {
+        return {
+          success: false,
+          code: 500,
+          message: "خطایی نامشخص رخ داده است",
+          data: null,
+          raw: JSON.stringify(error.response),
+        };
+      }
     }
   }
 
@@ -79,7 +89,17 @@ export class ZarinpalStrategy
         },
       };
     } catch (error) {
-      return this.handleError(error as AxiosError, "verify");
+      if (error instanceof AxiosError) {
+        return this.handleError(error as AxiosError, "verify");
+      } else {
+        return {
+          success: false,
+          code: 500,
+          message: "خطایی نامشخص رخ داده است",
+          data: null,
+          raw: JSON.stringify(error.response),
+        };
+      }
     }
   }
 
@@ -101,7 +121,17 @@ export class ZarinpalStrategy
         },
       };
     } catch (error) {
-      return this.handleError(error as AxiosError, "inquiry");
+      if (error instanceof AxiosError) {
+        return this.handleError(error as AxiosError, "inquiry");
+      } else {
+        return {
+          success: false,
+          code: 500,
+          message: "خطایی نامشخص رخ داده است",
+          data: null,
+          raw: JSON.stringify(error.response),
+        };
+      }
     }
   }
 
