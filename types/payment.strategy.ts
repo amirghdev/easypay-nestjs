@@ -5,7 +5,7 @@ import { RequestOptions } from "../request/request";
 import { BaseVerifyResponse } from "../verify/verify";
 import { VerifyOptions } from "../verify/verify";
 
-export interface BasePaymentStrategy<T extends RequestData, V extends VerifyData, I extends InquiryData> {
+export interface BasePaymentStrategy<T extends RequestData, V extends VerifyData, I extends InquiryData = never> {
   requestPayment(options: RequestOptions): Promise<BaseRequestResponse<T>>;
   verifyPayment(options: VerifyOptions): Promise<BaseVerifyResponse<V>>;
   inquiryPayment?(options: InquiryOptions): Promise<BaseInquiryResponse<I>>;
