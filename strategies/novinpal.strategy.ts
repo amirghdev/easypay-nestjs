@@ -1,6 +1,6 @@
 import { BasePaymentStrategy } from "../types/payment.strategy";
 import { NovinpalRequestOptions, NovinpalRequestResponse, NovinpalRequestResponseExtraData } from "../request/novinpal.request";
-import { NovinpalVerifyPaymentResponseExtraData } from "../verify/novinpal.verify";
+import { NovinpalVerifyOptions, NovinpalVerifyPaymentResponse, NovinpalVerifyPaymentResponseExtraData } from "../verify/novinpal.verify";
 import { BaseRequestResponse } from "../request/request";
 import { VerifyOptions, BaseVerifyResponse } from "../verify/verify";
 import { InquiryOptions } from "../inquiry/inquiry";
@@ -35,11 +35,9 @@ export class NovinpalStrategy implements BasePaymentStrategy<NovinpalRequestResp
 
       const isSuccess = response.data.status === 1;
 
-      console.log("response", response.data);
-
       return {
         success: isSuccess,
-        code: response.data.errorCode,
+        code: response.data.status,
         message: isSuccess ? "success" : response.data.errorDescription,
         data: {
           refId: +response.data.refId,
@@ -48,12 +46,40 @@ export class NovinpalStrategy implements BasePaymentStrategy<NovinpalRequestResp
         raw: response.data,
       };
     } catch (error) {
-      console.log("error", error);
+      console.log(error?.response?.data);
     }
   }
 
-  verifyPayment(options: VerifyOptions): Promise<BaseVerifyResponse<NovinpalVerifyPaymentResponseExtraData>> {
-    throw new Error("Method not implemented.");
+  async verifyPayment(options: NovinpalVerifyOptions): Promise<BaseVerifyResponse<NovinpalVerifyPaymentResponseExtraData>> {
+    const url = options.sandbox ? `${this.API_URLS.sandbox}/verify` : `${this.API_URLS.production}/verify`;
+
+    try {
+      const response = await axios.post<NovinpalVerifyPaymentResponse>(url, {
+        api_key: options.apiKey,
+        ref_id: options.refId,
+      });
+
+      const isSuccess = response.data.status === 1;
+
+      return {
+        success: isSuccess,
+        code: response.data.status,
+        message: isSuccess ? "success" : "failed",
+        data: {
+          refId: +response.data.refId,
+          amount: response.data.amount,
+          cardNumber: response.data.cardNumber,
+          description: response.data.description,
+          orderId: response.data.orderId,
+          paidAt: response.data.paidAt,
+          refNumber: response.data.refNumber,
+          verifiedBefore: response.data.verifiedBefore,
+        },
+        raw: response.data,
+      };
+    } catch (error) {
+      console.log("error", error);
+    }
   }
 
   inquiryPayment(options: InquiryOptions): Promise<BaseInquiryResponse<null>> {
