@@ -1,10 +1,10 @@
 import { BasePaymentStrategy } from "../types/payment.strategy";
-import { ZibalRequestOptions, ZibalRequestResponse, ZibalRequestResponseExtraData } from "../request/zibal.request";
-import { ZibalVerifyOptions, ZibalVerifyPaymentResponse, ZibalVerifyPaymentResponseExtraData } from "../verify/zibal.verify";
-import { ZibalInquiryOptions, ZibalInquiryResponse, ZibalInquiryResponseError, ZibalInquiryResponseExtraData } from "../inquiry/zibal.inquiry";
-import { BaseRequestResponse } from "../request/request";
-import { BaseVerifyResponse } from "../verify/verify";
-import { BaseInquiryResponse } from "../inquiry/inquiry";
+import { ZibalRequestOptions, ZibalRequestResponse, ZibalRequestResponseExtraData } from "../types/zibal/request";
+import { ZibalVerifyOptions, ZibalVerifyPaymentResponse, ZibalVerifyPaymentResponseExtraData } from "../types/zibal/verify";
+import { ZibalInquiryOptions, ZibalInquiryResponse, ZibalInquiryResponseError, ZibalInquiryResponseExtraData } from "../types/zibal/inquiry";
+import { BaseRequestResponse } from "../types/base/request";
+import { BaseVerifyResponse } from "../types/base/verify";
+import { BaseInquiryResponse } from "../types/base/inquiry";
 import axios, { AxiosError } from "axios";
 
 export class ZibalStrategy
@@ -20,7 +20,7 @@ export class ZibalStrategy
     production: "https://gateway.zibal.ir/start",
   };
 
-  async requestPayment(options: ZibalRequestOptions): Promise<BaseRequestResponse<ZibalRequestResponseExtraData>> {
+  async request(options: ZibalRequestOptions): Promise<BaseRequestResponse<ZibalRequestResponseExtraData>> {
     const url = options.sandbox ? `${this.API_URLS.sandbox}/request` : `${this.API_URLS.production}/request`;
     const gatewayUrl = options.sandbox ? this.GATEWAY_URLS.sandbox : this.GATEWAY_URLS.production;
 
@@ -63,7 +63,7 @@ export class ZibalStrategy
     }
   }
 
-  async verifyPayment(options: ZibalVerifyOptions): Promise<BaseVerifyResponse<ZibalVerifyPaymentResponseExtraData>> {
+  async verify(options: ZibalVerifyOptions): Promise<BaseVerifyResponse<ZibalVerifyPaymentResponseExtraData>> {
     const url = options.sandbox ? `${this.API_URLS.sandbox}/verify` : `${this.API_URLS.production}/verify`;
 
     try {
@@ -102,7 +102,7 @@ export class ZibalStrategy
     }
   }
 
-  async inquiryPayment(options: ZibalInquiryOptions): Promise<BaseInquiryResponse<ZibalInquiryResponseExtraData>> {
+  async inquiry(options: ZibalInquiryOptions): Promise<BaseInquiryResponse<ZibalInquiryResponseExtraData>> {
     const url = options.sandbox ? `${this.API_URLS.sandbox}/inquiry` : `${this.API_URLS.production}/inquiry`;
 
     try {

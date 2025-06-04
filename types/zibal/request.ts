@@ -1,4 +1,4 @@
-import { BaseRequestOptions } from "./request";
+import { BaseRequestOptions } from "../base/request";
 
 export interface ZibalRequestOptions extends BaseRequestOptions {
   driver: "ZIBAL";

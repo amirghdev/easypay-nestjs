@@ -1,6 +1,6 @@
-import { NovinpalRequestOptions, NovinpalRequestResponseExtraData } from "./novinpal.request";
-import { ZarinpalRequestOptions, ZarinpalRequestResponseExtraData } from "./zarinpal.request";
-import { ZibalRequestOptions, ZibalRequestResponseExtraData } from "./zibal.request";
+import { ZarinpalRequestOptions, ZarinpalRequestResponseExtraData } from "../zarinpal/request";
+import { ZibalRequestOptions, ZibalRequestResponseExtraData } from "../zibal/request";
+import { NovinpalRequestOptions, NovinpalRequestResponseExtraData } from "../novinpal/request";
 
 export interface BaseRequestOptions {
   amount: number;

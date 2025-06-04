@@ -1,17 +1,17 @@
 import { BasePaymentStrategy } from "types/payment.strategy";
-import { BaseRequestResponse } from "../request/request";
-import { ZarinpalRequestOptions, ZarinpalRequestResponse, ZarinpalRequestResponseExtraData } from "../request/zarinpal.request";
-import { ZarinpalVerifyOptions, ZarinpalVerifyPaymentResponse, ZarinpalVerifyPaymentResponseExtraData } from "../verify/zarinpal.verify";
+import { BaseRequestResponse } from "../types/base/request";
+import { ZarinpalRequestOptions, ZarinpalRequestResponse, ZarinpalRequestResponseExtraData } from "../types/zarinpal/request";
+import { ZarinpalVerifyOptions, ZarinpalVerifyPaymentResponse, ZarinpalVerifyPaymentResponseExtraData } from "../types/zarinpal/verify";
 import {
   ZarinpalInquiryOptions,
   ZarinpalInquiryResponse,
   ZarinpalInquiryResponseError,
   ZarinpalInquiryResponseExtraData,
-} from "../inquiry/zarinpal.inquiry";
-import { BaseVerifyResponse } from "../verify/verify";
-import { BaseInquiryResponse } from "../inquiry/inquiry";
+} from "../types/zarinpal/inquiry";
+import { BaseVerifyResponse } from "../types/base/verify";
+import { BaseInquiryResponse } from "../types/base/inquiry";
 import axios, { AxiosError } from "axios";
-import { RequestType } from "../types/general.type";
+import { RequestType } from "../types/base/general";
 
 export class ZarinpalStrategy
   implements BasePaymentStrategy<ZarinpalRequestResponseExtraData, ZarinpalVerifyPaymentResponseExtraData, ZarinpalInquiryResponseExtraData>
@@ -26,7 +26,7 @@ export class ZarinpalStrategy
     production: "https://payment.zarinpal.com/pg/StartPay",
   };
 
-  async requestPayment(options: ZarinpalRequestOptions): Promise<BaseRequestResponse<ZarinpalRequestResponseExtraData>> {
+  async request(options: ZarinpalRequestOptions): Promise<BaseRequestResponse<ZarinpalRequestResponseExtraData>> {
     try {
       const url = options.sandbox ? `${this.API_URLS.sandbox}/request.json` : `${this.API_URLS.production}/request.json`;
       const gatewayUrl = options.sandbox ? this.GATEWAY_URLS.sandbox : this.GATEWAY_URLS.production;
@@ -66,7 +66,7 @@ export class ZarinpalStrategy
     }
   }
 
-  async verifyPayment(options: ZarinpalVerifyOptions): Promise<BaseVerifyResponse<ZarinpalVerifyPaymentResponseExtraData>> {
+  async verify(options: ZarinpalVerifyOptions): Promise<BaseVerifyResponse<ZarinpalVerifyPaymentResponseExtraData>> {
     try {
       const url = options.sandbox ? `${this.API_URLS.sandbox}/verify.json` : `${this.API_URLS.production}/verify.json`;
       const request = await axios.post<ZarinpalVerifyPaymentResponse>(url, {
@@ -103,7 +103,7 @@ export class ZarinpalStrategy
     }
   }
 
-  async inquiryPayment(options: ZarinpalInquiryOptions): Promise<BaseInquiryResponse<ZarinpalInquiryResponseExtraData>> {
+  async inquiry(options: ZarinpalInquiryOptions): Promise<BaseInquiryResponse<ZarinpalInquiryResponseExtraData>> {
     try {
       const url = options.sandbox ? `${this.API_URLS.sandbox}/inquiry.json` : `${this.API_URLS.production}/inquiry.json`;
       const request = await axios.post<ZarinpalInquiryResponse>(url, {

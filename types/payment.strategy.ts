@@ -1,14 +1,14 @@
-import { BaseRequestResponse, RequestData } from "../request/request";
-import { VerifyData } from "../verify/verify";
-import { BaseInquiryResponse, InquiryData, InquiryOptions } from "../inquiry/inquiry";
-import { RequestOptions } from "../request/request";
-import { BaseVerifyResponse } from "../verify/verify";
-import { VerifyOptions } from "../verify/verify";
+import { BaseRequestResponse, RequestData } from "../types/base/request";
+import { VerifyData } from "../types/base/verify";
+import { BaseInquiryResponse, InquiryData, InquiryOptions } from "../types/base/inquiry";
+import { RequestOptions } from "../types/base/request";
+import { BaseVerifyResponse } from "../types/base/verify";
+import { VerifyOptions } from "../types/base/verify";
 
 export interface BasePaymentStrategy<T extends RequestData, V extends VerifyData, I extends InquiryData = never> {
-  requestPayment(options: RequestOptions): Promise<BaseRequestResponse<T>>;
-  verifyPayment(options: VerifyOptions): Promise<BaseVerifyResponse<V>>;
-  inquiryPayment?(options: InquiryOptions): Promise<BaseInquiryResponse<I>>;
+  request(options: RequestOptions): Promise<BaseRequestResponse<T>>;
+  verify(options: VerifyOptions): Promise<BaseVerifyResponse<V>>;
+  inquiry?(options: InquiryOptions): Promise<BaseInquiryResponse<I>>;
   API_URLS?: {
     sandbox: string;
     production: string;

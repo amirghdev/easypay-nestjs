@@ -1,12 +1,11 @@
 import { BasePaymentStrategy } from "../types/payment.strategy";
-import { NovinpalRequestOptions, NovinpalRequestResponse, NovinpalRequestResponseExtraData } from "../request/novinpal.request";
-import { NovinpalVerifyOptions, NovinpalVerifyPaymentResponse, NovinpalVerifyPaymentResponseExtraData } from "../verify/novinpal.verify";
-import { BaseRequestResponse } from "../request/request";
-import { BaseVerifyResponse } from "../verify/verify";
-import { InquiryOptions } from "../inquiry/inquiry";
-import { BaseInquiryResponse } from "../inquiry/inquiry";
+import { NovinpalRequestOptions, NovinpalRequestResponse, NovinpalRequestResponseExtraData } from "../types/novinpal/request";
+import { NovinpalVerifyOptions, NovinpalVerifyPaymentResponse, NovinpalVerifyPaymentResponseExtraData } from "../types/novinpal/verify";
+import { BaseRequestResponse } from "../types/base/request";
+import { BaseVerifyResponse } from "../types/base/verify";
+import { BaseInquiryResponse, InquiryOptions } from "../types/base/inquiry";
 import axios, { AxiosError } from "axios";
-import { NovinpalError } from "../types/novinpal.type";
+import { NovinpalError } from "../types/novinpal/base";
 
 export class NovinpalStrategy implements BasePaymentStrategy<NovinpalRequestResponseExtraData, NovinpalVerifyPaymentResponseExtraData, null> {
   API_URLS = {
@@ -19,7 +18,7 @@ export class NovinpalStrategy implements BasePaymentStrategy<NovinpalRequestResp
     production: "https://api.novinpal.ir/invoice/start",
   };
 
-  async requestPayment(options: NovinpalRequestOptions): Promise<BaseRequestResponse<NovinpalRequestResponseExtraData>> {
+  async request(options: NovinpalRequestOptions): Promise<BaseRequestResponse<NovinpalRequestResponseExtraData>> {
     const url = options.sandbox ? `${this.API_URLS.sandbox}/request` : `${this.API_URLS.production}/request`;
     const gatewayUrl = options.sandbox ? this.GATEWAY_URLS.sandbox : this.GATEWAY_URLS.production;
 
@@ -55,7 +54,7 @@ export class NovinpalStrategy implements BasePaymentStrategy<NovinpalRequestResp
     }
   }
 
-  async verifyPayment(options: NovinpalVerifyOptions): Promise<BaseVerifyResponse<NovinpalVerifyPaymentResponseExtraData>> {
+  async verify(options: NovinpalVerifyOptions): Promise<BaseVerifyResponse<NovinpalVerifyPaymentResponseExtraData>> {
     const url = options.sandbox ? `${this.API_URLS.sandbox}/verify` : `${this.API_URLS.production}/verify`;
 
     try {
@@ -91,7 +90,7 @@ export class NovinpalStrategy implements BasePaymentStrategy<NovinpalRequestResp
     }
   }
 
-  inquiryPayment(options: InquiryOptions): Promise<BaseInquiryResponse<null>> {
+  inquiry(options: InquiryOptions): Promise<BaseInquiryResponse<null>> {
     throw new Error("Novinpal does not support inquiry payment.");
   }
 

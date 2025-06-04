@@ -1,4 +1,4 @@
-import { BaseRequestOptions } from "./request";
+import { BaseRequestOptions } from "../base/request";
 
 export interface ZarinpalRequestOptions extends BaseRequestOptions {
   driver: "ZARINPAL";

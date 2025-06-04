@@ -1,6 +1,6 @@
-import { NovinpalVerifyOptions, NovinpalVerifyPaymentResponseExtraData } from "./novinpal.verify";
-import { ZarinpalVerifyOptions, ZarinpalVerifyPaymentResponseExtraData } from "./zarinpal.verify";
-import { ZibalVerifyOptions, ZibalVerifyPaymentResponseExtraData } from "./zibal.verify";
+import { ZarinpalVerifyOptions, ZarinpalVerifyPaymentResponseExtraData } from "../zarinpal/verify";
+import { ZibalVerifyOptions, ZibalVerifyPaymentResponseExtraData } from "../zibal/verify";
+import { NovinpalVerifyOptions, NovinpalVerifyPaymentResponseExtraData } from "../novinpal/verify";
 
 export interface BaseVerifyOptions {
   sandbox?: boolean;

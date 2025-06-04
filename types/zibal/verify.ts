@@ -1,4 +1,4 @@
-import { BaseVerifyOptions } from "./verify";
+import { BaseVerifyOptions } from "../base/verify";
 
 export interface ZibalVerifyOptions extends BaseVerifyOptions {
   driver: "ZIBAL";

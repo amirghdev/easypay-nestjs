@@ -1,5 +1,5 @@
-import { ZarinpalInquiryOptions, ZarinpalInquiryResponseExtraData } from "./zarinpal.inquiry";
-import { ZibalInquiryOptions, ZibalInquiryResponseExtraData } from "./zibal.inquiry";
+import { ZarinpalInquiryOptions, ZarinpalInquiryResponseExtraData } from "../zarinpal/inquiry";
+import { ZibalInquiryOptions, ZibalInquiryResponseExtraData } from "../zibal/inquiry";
 
 export type InquiryDriver = "ZARINPAL" | "ZIBAL";
 
