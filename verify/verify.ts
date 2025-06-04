@@ -9,8 +9,8 @@ export interface BaseVerifyOptions {
 export type VerifyOptions = ZarinpalVerifyOptions | ZibalVerifyOptions | NovinpalVerifyOptions;
 
 export interface BaseVerifyResponse<T extends VerifyData> {
-  code: number;
-  message: string;
+  code?: number;
+  message?: string;
   success: boolean;
   data?: T;
   raw?: unknown;

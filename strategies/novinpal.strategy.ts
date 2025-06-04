@@ -2,10 +2,11 @@ import { BasePaymentStrategy } from "../types/payment.strategy";
 import { NovinpalRequestOptions, NovinpalRequestResponse, NovinpalRequestResponseExtraData } from "../request/novinpal.request";
 import { NovinpalVerifyOptions, NovinpalVerifyPaymentResponse, NovinpalVerifyPaymentResponseExtraData } from "../verify/novinpal.verify";
 import { BaseRequestResponse } from "../request/request";
-import { VerifyOptions, BaseVerifyResponse } from "../verify/verify";
+import { BaseVerifyResponse } from "../verify/verify";
 import { InquiryOptions } from "../inquiry/inquiry";
 import { BaseInquiryResponse } from "../inquiry/inquiry";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { NovinpalError } from "../types/novinpal.type";
 
 export class NovinpalStrategy implements BasePaymentStrategy<NovinpalRequestResponseExtraData, NovinpalVerifyPaymentResponseExtraData, null> {
   API_URLS = {
@@ -46,7 +47,11 @@ export class NovinpalStrategy implements BasePaymentStrategy<NovinpalRequestResp
         raw: response.data,
       };
     } catch (error) {
-      console.log(error?.response?.data);
+      if (error instanceof AxiosError) {
+        return this.handleAxiosError(error);
+      } else {
+        return this.handleUnknownError(error);
+      }
     }
   }
 
@@ -78,11 +83,46 @@ export class NovinpalStrategy implements BasePaymentStrategy<NovinpalRequestResp
         raw: response.data,
       };
     } catch (error) {
-      console.log("error", error);
+      if (error instanceof AxiosError) {
+        return this.handleAxiosError(error as AxiosError);
+      } else {
+        return this.handleUnknownError(error);
+      }
     }
   }
 
   inquiryPayment(options: InquiryOptions): Promise<BaseInquiryResponse<null>> {
     throw new Error("Novinpal does not support inquiry payment.");
+  }
+
+  private handleAxiosError(error: AxiosError): BaseRequestResponse<null> | BaseVerifyResponse<null> {
+    const errorData = error.response?.data as NovinpalError;
+    if ("status" in errorData) {
+      return {
+        success: false,
+        code: +errorData.errorCode,
+        message: errorData.errorDescription,
+        data: null,
+        raw: errorData,
+      };
+    } else {
+      return {
+        success: false,
+        code: +errorData.code,
+        message: errorData.message,
+        data: null,
+        raw: errorData,
+      };
+    }
+  }
+
+  private handleUnknownError(error: unknown): BaseRequestResponse<null> | BaseVerifyResponse<null> {
+    return {
+      success: false,
+      code: 500,
+      message: "unknown error",
+      data: null,
+      raw: error,
+    };
   }
 }
