@@ -16,6 +16,10 @@ npm install easypay-nestjs
 yarn add easypay-nestjs
 ```
 
+## مستندات
+
+- [نسخه 1](https://github.com/amirghdev/easypay-nestjs/blob/main/v1.md) - برای استفاده از نسخه 1.
+
 ## استفاده
 
 #### اضافه کردن ماژول به فایل app.module
