@@ -1,6 +1,6 @@
 export interface ZarinpalInquiryPaymentOptions {
   authority: string;
-  merchant_id: string;
+  merchantId: string;
 }
 
 export interface ZarinpalInquiryOptions extends ZarinpalInquiryPaymentOptions {

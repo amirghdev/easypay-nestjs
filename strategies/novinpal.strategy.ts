@@ -1,8 +1,8 @@
 import { BasePaymentStrategy } from "../types/payment.strategy";
 import { NovinpalRequestOptions, NovinpalRequestResponse, NovinpalRequestResponseExtraData } from "../types/novinpal/request";
 import { NovinpalVerifyOptions, NovinpalVerifyPaymentResponse, NovinpalVerifyPaymentResponseExtraData } from "../types/novinpal/verify";
-import { BaseRequestResponse } from "../types/base/request";
-import { BaseVerifyResponse } from "../types/base/verify";
+import { BaseRequestResponse, RequestOptions } from "../types/base/request";
+import { BaseVerifyResponse, VerifyOptions } from "../types/base/verify";
 import { BaseInquiryResponse, InquiryOptions } from "../types/base/inquiry";
 import axios, { AxiosError } from "axios";
 import { NovinpalError } from "../types/novinpal/base";
@@ -18,7 +18,9 @@ export class NovinpalStrategy implements BasePaymentStrategy<NovinpalRequestResp
     production: "https://api.novinpal.ir/invoice/start",
   };
 
-  async request(options: NovinpalRequestOptions): Promise<BaseRequestResponse<NovinpalRequestResponseExtraData>> {
+  async request(data: RequestOptions): Promise<BaseRequestResponse<NovinpalRequestResponseExtraData>> {
+    const options = data.options as NovinpalRequestOptions;
+
     const url = options.sandbox ? `${this.API_URLS.sandbox}/request` : `${this.API_URLS.production}/request`;
     const gatewayUrl = options.sandbox ? this.GATEWAY_URLS.sandbox : this.GATEWAY_URLS.production;
 
@@ -54,7 +56,9 @@ export class NovinpalStrategy implements BasePaymentStrategy<NovinpalRequestResp
     }
   }
 
-  async verify(options: NovinpalVerifyOptions): Promise<BaseVerifyResponse<NovinpalVerifyPaymentResponseExtraData>> {
+  async verify(data: VerifyOptions): Promise<BaseVerifyResponse<NovinpalVerifyPaymentResponseExtraData>> {
+    const options = data.options as NovinpalVerifyOptions;
+
     const url = options.sandbox ? `${this.API_URLS.sandbox}/verify` : `${this.API_URLS.production}/verify`;
 
     try {

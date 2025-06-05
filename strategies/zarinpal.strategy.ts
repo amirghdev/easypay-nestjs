@@ -1,5 +1,5 @@
 import { BasePaymentStrategy } from "types/payment.strategy";
-import { BaseRequestResponse } from "../types/base/request";
+import { BaseRequestResponse, RequestOptions } from "../types/base/request";
 import { ZarinpalRequestOptions, ZarinpalRequestResponse, ZarinpalRequestResponseExtraData } from "../types/zarinpal/request";
 import { ZarinpalVerifyOptions, ZarinpalVerifyPaymentResponse, ZarinpalVerifyPaymentResponseExtraData } from "../types/zarinpal/verify";
 import {
@@ -8,8 +8,8 @@ import {
   ZarinpalInquiryResponseError,
   ZarinpalInquiryResponseExtraData,
 } from "../types/zarinpal/inquiry";
-import { BaseVerifyResponse } from "../types/base/verify";
-import { BaseInquiryResponse } from "../types/base/inquiry";
+import { BaseVerifyResponse, VerifyOptions } from "../types/base/verify";
+import { BaseInquiryResponse, InquiryOptions } from "../types/base/inquiry";
 import axios, { AxiosError } from "axios";
 import { RequestType } from "../types/base/general";
 
@@ -26,7 +26,9 @@ export class ZarinpalStrategy
     production: "https://payment.zarinpal.com/pg/StartPay",
   };
 
-  async request(options: ZarinpalRequestOptions): Promise<BaseRequestResponse<ZarinpalRequestResponseExtraData>> {
+  async request(data: RequestOptions): Promise<BaseRequestResponse<ZarinpalRequestResponseExtraData>> {
+    const options = data.options as ZarinpalRequestOptions;
+
     try {
       const url = options.sandbox ? `${this.API_URLS.sandbox}/request.json` : `${this.API_URLS.production}/request.json`;
       const gatewayUrl = options.sandbox ? this.GATEWAY_URLS.sandbox : this.GATEWAY_URLS.production;
@@ -66,7 +68,9 @@ export class ZarinpalStrategy
     }
   }
 
-  async verify(options: ZarinpalVerifyOptions): Promise<BaseVerifyResponse<ZarinpalVerifyPaymentResponseExtraData>> {
+  async verify(data: VerifyOptions): Promise<BaseVerifyResponse<ZarinpalVerifyPaymentResponseExtraData>> {
+    const options = data.options as ZarinpalVerifyOptions;
+
     try {
       const url = options.sandbox ? `${this.API_URLS.sandbox}/verify.json` : `${this.API_URLS.production}/verify.json`;
       const request = await axios.post<ZarinpalVerifyPaymentResponse>(url, {
@@ -103,11 +107,13 @@ export class ZarinpalStrategy
     }
   }
 
-  async inquiry(options: ZarinpalInquiryOptions): Promise<BaseInquiryResponse<ZarinpalInquiryResponseExtraData>> {
+  async inquiry(data: InquiryOptions): Promise<BaseInquiryResponse<ZarinpalInquiryResponseExtraData>> {
+    const options = data.options as ZarinpalInquiryOptions;
+
     try {
       const url = options.sandbox ? `${this.API_URLS.sandbox}/inquiry.json` : `${this.API_URLS.production}/inquiry.json`;
       const request = await axios.post<ZarinpalInquiryResponse>(url, {
-        merchant_id: options.merchant_id,
+        merchant_id: options.merchantId,
         authority: options.authority,
       });
 

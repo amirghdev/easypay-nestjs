@@ -3,9 +3,9 @@ import { BaseRequestResponse, RequestOptions, RequestData } from "../types/base/
 import { BaseVerifyResponse, VerifyData, VerifyOptions } from "../types/base/verify";
 import { BaseInquiryResponse, InquiryData, InquiryOptions } from "../types/base/inquiry";
 import { BasePaymentStrategy } from "../types/payment.strategy";
-import { ZarinpalRequestOptions, ZarinpalRequestResponseExtraData } from "../types/zarinpal/request";
-import { NovinpalRequestOptions, NovinpalRequestResponseExtraData } from "../types/novinpal/request";
-import { ZibalRequestOptions, ZibalRequestResponseExtraData } from "../types/zibal/request";
+import { ZarinpalRequestOptions, ZarinpalRequestResponseExtraData } from "../types/zarinpal";
+import { NovinpalRequestOptions, NovinpalRequestResponseExtraData } from "../types/novinpal";
+import { ZibalRequestOptions, ZibalRequestResponseExtraData } from "../types/zibal";
 import { ZarinpalVerifyOptions, ZarinpalVerifyPaymentResponseExtraData } from "../types/zarinpal/verify";
 import { NovinpalVerifyOptions, NovinpalVerifyPaymentResponseExtraData } from "../types/novinpal/verify";
 import { ZibalVerifyOptions, ZibalVerifyPaymentResponseExtraData } from "../types/zibal/verify";
@@ -13,52 +13,49 @@ import { ZibalInquiryOptions } from "../types/zibal/inquiry";
 import { ZarinpalInquiryOptions } from "../types/zarinpal/inquiry";
 import { ZarinpalInquiryResponseExtraData } from "../types/zarinpal/inquiry";
 import { ZibalInquiryResponseExtraData } from "../types/zibal/inquiry";
+import { ZarinpalStrategy } from "../strategies/zarinpal.strategy";
+import { ZibalStrategy } from "../strategies/zibal.strategy";
+import { NovinpalStrategy } from "../strategies/novinpal.strategy";
+import { Driver } from "../types/base/general";
 
 @Injectable()
 export class EasypayService {
   private strategy: BasePaymentStrategy<any, any, any>;
 
-  public setStrategy<T extends RequestData, V extends VerifyData, I extends InquiryData>(strategy: BasePaymentStrategy<T, V, I>) {
-    this.strategy = strategy;
-  }
-
-  public request<T extends ZarinpalRequestResponseExtraData>(
-    options: ZarinpalRequestOptions,
-  ): Promise<BaseRequestResponse<ZarinpalRequestResponseExtraData>>;
-
-  public request<T extends ZibalRequestResponseExtraData>(options: ZibalRequestOptions): Promise<BaseRequestResponse<ZibalRequestResponseExtraData>>;
-
-  public request<T extends NovinpalRequestResponseExtraData>(
-    options: NovinpalRequestOptions,
-  ): Promise<BaseRequestResponse<NovinpalRequestResponseExtraData>>;
-
+  public request(options: { driver: "ZARINPAL"; options: ZarinpalRequestOptions }): Promise<BaseRequestResponse<ZarinpalRequestResponseExtraData>>;
+  public request(options: { driver: "ZIBAL"; options: ZibalRequestOptions }): Promise<BaseRequestResponse<ZibalRequestResponseExtraData>>;
+  public request(options: { driver: "NOVINPAL"; options: NovinpalRequestOptions }): Promise<BaseRequestResponse<NovinpalRequestResponseExtraData>>;
   async request<T extends RequestData>(options: RequestOptions): Promise<BaseRequestResponse<T>> {
+    this.setStrategyBasedOnDriver(options.driver);
     return this.strategy.request(options);
   }
 
-  public verify<T extends ZarinpalVerifyPaymentResponseExtraData>(
-    options: ZarinpalVerifyOptions,
-  ): Promise<BaseVerifyResponse<ZarinpalVerifyPaymentResponseExtraData>>;
-
-  public verify<T extends ZibalVerifyPaymentResponseExtraData>(
-    options: ZibalVerifyOptions,
-  ): Promise<BaseVerifyResponse<ZibalVerifyPaymentResponseExtraData>>;
-
-  public verify<T extends NovinpalVerifyPaymentResponseExtraData>(
-    options: NovinpalVerifyOptions,
-  ): Promise<BaseVerifyResponse<NovinpalVerifyPaymentResponseExtraData>>;
-
+  public verify(options: { driver: "ZARINPAL"; options: ZarinpalVerifyOptions }): Promise<BaseVerifyResponse<ZarinpalVerifyPaymentResponseExtraData>>;
+  public verify(options: { driver: "ZIBAL"; options: ZibalVerifyOptions }): Promise<BaseVerifyResponse<ZibalVerifyPaymentResponseExtraData>>;
+  public verify(options: { driver: "NOVINPAL"; options: NovinpalVerifyOptions }): Promise<BaseVerifyResponse<NovinpalVerifyPaymentResponseExtraData>>;
   async verify<T extends VerifyData>(options: VerifyOptions): Promise<BaseVerifyResponse<T>> {
+    this.setStrategyBasedOnDriver(options.driver);
     return this.strategy.verify(options);
   }
 
-  public inquiry<T extends ZarinpalInquiryResponseExtraData>(
-    options: ZarinpalInquiryOptions,
-  ): Promise<BaseInquiryResponse<ZarinpalInquiryResponseExtraData>>;
-
-  public inquiry<T extends ZibalInquiryResponseExtraData>(options: ZibalInquiryOptions): Promise<BaseInquiryResponse<ZibalInquiryResponseExtraData>>;
-
+  public inquiry(options: { driver: "ZARINPAL"; options: ZarinpalInquiryOptions }): Promise<BaseInquiryResponse<ZarinpalInquiryResponseExtraData>>;
+  public inquiry(options: { driver: "ZIBAL"; options: ZibalInquiryOptions }): Promise<BaseInquiryResponse<ZibalInquiryResponseExtraData>>;
   async inquiry<T extends InquiryData>(options: InquiryOptions): Promise<BaseInquiryResponse<T>> {
+    this.setStrategyBasedOnDriver(options.driver);
     return this.strategy.inquiry(options);
+  }
+
+  private setStrategyBasedOnDriver(driver: Driver) {
+    switch (driver) {
+      case "ZARINPAL":
+        this.strategy = new ZarinpalStrategy();
+        break;
+      case "ZIBAL":
+        this.strategy = new ZibalStrategy();
+        break;
+      case "NOVINPAL":
+        this.strategy = new NovinpalStrategy();
+        break;
+    }
   }
 }

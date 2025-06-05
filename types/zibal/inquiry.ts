@@ -4,7 +4,6 @@ export interface ZibalInquiryPaymentOptions {
 }
 
 export interface ZibalInquiryOptions extends ZibalInquiryPaymentOptions {
-  // driver: "ZIBAL";
   sandbox: boolean;
 }
 

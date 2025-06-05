@@ -32,7 +32,7 @@ export class AppModule {}
 #### اضافه کردن سرویس
 
 ```typescript
-import { EasypayService, ZarinpalRequestResponseExtraData, ZibalRequestResponseExtraData } from "easypay-nestjs";
+import { EasypayService } from "easypay-nestjs";
 
 export class PaymentService {
   constructor(private readonly easypayService: EasypayService) {}
@@ -42,59 +42,43 @@ export class PaymentService {
 #### مثال: پرداخت با زرین‌پال
 
 ```typescript
-const zarinpalRequest = await this.easypayService.requestPayment({
-  amount: 200000, // قیمت به ریال
-  callbackUrl: "callback",
+const zarinpalRequest = await this.easypayService.request({
   driver: "ZARINPAL",
-  merchantId: "your code",
-  sandbox: true,
-  description: "شماره فاکتور 1",
-  metadata: {
-    mobile: "your number",
-    email: "your email",
+  options: {
+    amount: 20000, // ( قیمت به ریال می باشد )
+    callbackUrl: "",
+    merchantId: "",
+    description: "",
+    sandbox: true,
   },
 });
-if (!zarinpalRequest.success) {
-  console.log("Request zarinpal error", zarinpalRequest);
-  return;
-}
-console.log("Request zarinpal success", zarinpalRequest);
 ```
 
 #### اعتبار سنجی
 
 ```typescript
-const zarinpalRequestExtraData = zarinpalRequest.data as ZarinpalRequestResponseExtraData;
-
-console.log(zarinpalRequestExtraData);
-
-const zarinpalVerify = await this.easypayService.verifyPayment({
-  amount: 200000,
+const zarinpalVerify = await this.easypayService.verify({
   driver: "ZARINPAL",
-  merchantId: "merchant",
-  sandbox: true,
-  authority: zarinpalRequestExtraData.authority,
+  options: {
+    amount: 20000,
+    authority: "",
+    merchantId: "",
+    sandbox: true,
+  },
 });
-
-if (!zarinpalVerify.success) {
-  console.log("Verify zarinpal error", zarinpalVerify);
-}
-console.log("Verify zarinpal success", zarinpalVerify);
-const zarinpalVerifyExtraData = zarinpalVerify.data as ZarinpalVerifyPaymentResponseExtraData;
-
-console.log(zarinpalVerifyExtraData);
 ```
 
 #### استعلام وضعیت پرداخت
 
 ```typescript
-const zarinpalInquiry = await this.easypayService.inquiryPayment({
+const zarinpalInquiry = await this.easypayService.inquiry({
   driver: "ZARINPAL",
-  authority: zarinpalRequestExtraData.authority,
-  merchant_id: "your merchant",
-  sandbox: true,
+  options: {
+    authority: "",
+    merchantId: "",
+    sandbox: true,
+  },
 });
-console.log(zarinpalInquiry);
 ```
 
 ## درگاه‌های پشتیبانی‌شده

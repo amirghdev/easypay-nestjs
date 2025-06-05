@@ -3,7 +3,10 @@ import { ZibalInquiryOptions, ZibalInquiryResponseExtraData } from "../zibal/inq
 
 export type InquiryDriver = "ZARINPAL" | "ZIBAL";
 
-export type InquiryOptions = ZarinpalInquiryOptions | ZibalInquiryOptions;
+export type InquiryOptions = {
+  driver: InquiryDriver;
+  options: ZarinpalInquiryOptions | ZibalInquiryOptions;
+};
 
 export type InquiryData = ZibalInquiryResponseExtraData | ZarinpalInquiryResponseExtraData;
 
