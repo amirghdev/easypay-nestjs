@@ -1,7 +1,7 @@
 import { BaseRequestOptions } from "../base/request";
 
 export interface NovinpalRequestOptions extends BaseRequestOptions {
-  driver: "NOVINPAL";
+  // driver: "NOVINPAL";
   api_key: string;
   order_id: string;
   mobile?: string;

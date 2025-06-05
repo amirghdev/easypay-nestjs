@@ -1,7 +1,7 @@
 import { BaseVerifyOptions } from "../base/verify";
 
 export interface NovinpalVerifyOptions extends BaseVerifyOptions {
-  driver: "NOVINPAL";
+  // driver: "NOVINPAL";
   apiKey: string;
   refId: string;
 }

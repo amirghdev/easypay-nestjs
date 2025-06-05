@@ -1,7 +1,7 @@
 import { BaseRequestOptions } from "../base/request";
 
 export interface ZarinpalRequestOptions extends BaseRequestOptions {
-  driver: "ZARINPAL";
+  // driver: "ZARINPAL";
   metadata?: {
     mobile: string;
     email: string;

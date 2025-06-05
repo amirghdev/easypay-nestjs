@@ -4,7 +4,7 @@ export interface ZarinpalInquiryPaymentOptions {
 }
 
 export interface ZarinpalInquiryOptions extends ZarinpalInquiryPaymentOptions {
-  driver: "ZARINPAL";
+  // driver: "ZARINPAL";
   sandbox: boolean;
 }
 
