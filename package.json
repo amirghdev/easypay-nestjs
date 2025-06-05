@@ -1,6 +1,6 @@
 {
     "name": "easypay-nestjs",
-    "version": "1.2.0",
+    "version": "2.0.0",
     "description": "easypay for iranian payment gateways",
     "main": "dist/index.js",
     "module": "dist/index.js",

@@ -1,120 +1,61 @@
 import { Injectable } from "@nestjs/common";
-import { HttpService } from "@nestjs/axios";
-import { RequestService } from "./request.service";
-import { AxiosError } from "axios";
-import { VerifyService } from "./verify.service";
-import { BaseRequestResponse, RequestOptions, RequestData } from "../request/request";
-import { UrlService } from "./url.service";
-import { BaseVerifyResponse, VerifyData, VerifyOptions } from "../verify/verify";
-import { ErrorService } from "./error.service";
-import { BaseResponse } from "../types/general.type";
-import { BaseInquiryResponse, InquiryData, InquiryOptions } from "../inquiry/inquiry";
-import { InquiryService } from "./inquiry.service";
-import { NovinpalRequestResponseExtraData, ZarinpalRequestResponseExtraData, ZibalRequestResponseExtraData } from "request";
+import { BaseRequestResponse, RequestOptions, RequestData } from "../types/base/request";
+import { BaseVerifyResponse, VerifyData, VerifyOptions } from "../types/base/verify";
+import { BaseInquiryResponse, InquiryData, InquiryOptions } from "../types/base/inquiry";
+import { BasePaymentStrategy } from "../types/payment.strategy";
+import { ZarinpalRequestOptions, ZarinpalRequestResponseExtraData } from "../types/zarinpal";
+import { NovinpalRequestOptions, NovinpalRequestResponseExtraData } from "../types/novinpal";
+import { ZibalRequestOptions, ZibalRequestResponseExtraData } from "../types/zibal";
+import { ZarinpalVerifyOptions, ZarinpalVerifyPaymentResponseExtraData } from "../types/zarinpal/verify";
+import { NovinpalVerifyOptions, NovinpalVerifyPaymentResponseExtraData } from "../types/novinpal/verify";
+import { ZibalVerifyOptions, ZibalVerifyPaymentResponseExtraData } from "../types/zibal/verify";
+import { ZibalInquiryOptions } from "../types/zibal/inquiry";
+import { ZarinpalInquiryOptions } from "../types/zarinpal/inquiry";
+import { ZarinpalInquiryResponseExtraData } from "../types/zarinpal/inquiry";
+import { ZibalInquiryResponseExtraData } from "../types/zibal/inquiry";
+import { ZarinpalStrategy } from "../strategies/zarinpal.strategy";
+import { ZibalStrategy } from "../strategies/zibal.strategy";
+import { NovinpalStrategy } from "../strategies/novinpal.strategy";
+import { Driver } from "../types/base/general";
 
 @Injectable()
 export class EasypayService {
-  constructor(
-    private readonly httpService: HttpService,
-    private readonly requestService: RequestService,
-    private readonly verifyService: VerifyService,
-    private readonly urlService: UrlService,
-    private readonly errorService: ErrorService,
-    private readonly inquiryService: InquiryService,
-  ) {}
+  private strategy: BasePaymentStrategy<any, any, any>;
 
-  public async requestPayment<T extends RequestData>(options: RequestOptions): Promise<BaseRequestResponse<T>> {
-    try {
-      if (!this.urlService || !this.requestService || !this.httpService || !this.errorService) {
-        throw new Error("Required services are not properly injected");
-      }
-
-      const url = this.urlService.getRequestUrl(options.driver, options.sandbox, "request");
-      const body = this.requestService.getRequestBody(options.driver, options);
-
-      const { data } = await this.httpService.axiosRef.post(url, body);
-
-      const response = this.requestService.getRequestResponse<T>(options.driver, data, options.sandbox);
-      response.raw = data;
-
-      return response;
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log("easypay request error", error?.response?.data);
-        const errorResponse = this.errorService.getRequestError(error, options.driver);
-
-        return {
-          success: false,
-          data: undefined,
-          code: errorResponse.code,
-          message: errorResponse.message,
-          raw: error?.response?.data,
-        } as BaseRequestResponse<T>;
-      }
-      return {
-        success: false,
-        data: undefined,
-        code: -1,
-        message: error?.message || "An unknown error occurred",
-        raw: error,
-      } as BaseRequestResponse<T>;
-    }
+  public request(options: { driver: "ZARINPAL"; options: ZarinpalRequestOptions }): Promise<BaseRequestResponse<ZarinpalRequestResponseExtraData>>;
+  public request(options: { driver: "ZIBAL"; options: ZibalRequestOptions }): Promise<BaseRequestResponse<ZibalRequestResponseExtraData>>;
+  public request(options: { driver: "NOVINPAL"; options: NovinpalRequestOptions }): Promise<BaseRequestResponse<NovinpalRequestResponseExtraData>>;
+  async request<T extends RequestData>(options: RequestOptions): Promise<BaseRequestResponse<T>> {
+    this.setStrategyBasedOnDriver(options.driver);
+    return this.strategy.request(options);
   }
 
-  public async verifyPayment<T extends VerifyData>(options: VerifyOptions): Promise<BaseVerifyResponse<T>> {
-    try {
-      if (!this.urlService || !this.verifyService || !this.httpService || !this.errorService) {
-        throw new Error("Required services are not properly injected");
-      }
-
-      const url = this.urlService.getRequestUrl(options.driver, options.sandbox, "verify");
-
-      const body = this.verifyService.getVerifyBody(options.driver, options);
-
-      const { data } = await this.httpService.axiosRef.post(url, body);
-
-      const response = this.verifyService.getVerifyResponse<T>(options.driver, data);
-
-      response.raw = data;
-
-      return response;
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log("easypay verify error", error?.response?.data);
-        const errorResponse = this.errorService.getVerifyError(error, options.driver);
-        return {
-          success: false,
-          data: undefined,
-          code: errorResponse.code,
-          message: errorResponse.message,
-          raw: error?.response?.data,
-        } as BaseVerifyResponse<T>;
-      }
-      return {
-        success: false,
-        data: undefined,
-        code: -1,
-        message: error?.message || "An unknown error occurred",
-        raw: error,
-      } as BaseVerifyResponse<T>;
-    }
+  public verify(options: { driver: "ZARINPAL"; options: ZarinpalVerifyOptions }): Promise<BaseVerifyResponse<ZarinpalVerifyPaymentResponseExtraData>>;
+  public verify(options: { driver: "ZIBAL"; options: ZibalVerifyOptions }): Promise<BaseVerifyResponse<ZibalVerifyPaymentResponseExtraData>>;
+  public verify(options: { driver: "NOVINPAL"; options: NovinpalVerifyOptions }): Promise<BaseVerifyResponse<NovinpalVerifyPaymentResponseExtraData>>;
+  async verify<T extends VerifyData>(options: VerifyOptions): Promise<BaseVerifyResponse<T>> {
+    this.setStrategyBasedOnDriver(options.driver);
+    return this.strategy.verify(options);
   }
 
-  public async inquiryPayment<T extends InquiryData>(options: InquiryOptions): Promise<BaseInquiryResponse<T>> {
-    try {
-      const url = this.urlService.getRequestUrl(options.driver, options.sandbox, "inquiry");
+  public inquiry(options: { driver: "ZARINPAL"; options: ZarinpalInquiryOptions }): Promise<BaseInquiryResponse<ZarinpalInquiryResponseExtraData>>;
+  public inquiry(options: { driver: "ZIBAL"; options: ZibalInquiryOptions }): Promise<BaseInquiryResponse<ZibalInquiryResponseExtraData>>;
+  async inquiry<T extends InquiryData>(options: InquiryOptions): Promise<BaseInquiryResponse<T>> {
+    this.setStrategyBasedOnDriver(options.driver);
+    return this.strategy.inquiry(options);
+  }
 
-      const body = this.inquiryService.getBody(options);
-
-      const { data } = await this.httpService.axiosRef.post(url, body);
-
-      const response = this.inquiryService.getInquiryResponse<T>(options.driver, data);
-
-      response.raw = data;
-
-      return response;
-    } catch (error) {
-      console.log("inquiry error", JSON.stringify(error));
+  private setStrategyBasedOnDriver(driver: Driver) {
+    switch (driver) {
+      case "ZARINPAL":
+        this.strategy = new ZarinpalStrategy();
+        break;
+      case "ZIBAL":
+        this.strategy = new ZibalStrategy();
+        break;
+      case "NOVINPAL":
+        this.strategy = new NovinpalStrategy();
+        break;
     }
   }
 }

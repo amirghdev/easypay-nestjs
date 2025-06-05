@@ -1,8 +1,8 @@
-import { ZarinpalRequestResponseError } from "../request/zarinpal.request";
-import { BaseVerifyOptions } from "./verify";
+import { BaseVerifyOptions } from "../base/verify";
+import { ZarinpalRequestResponseError } from "./request";
 
 export interface ZarinpalVerifyOptions extends BaseVerifyOptions {
-  driver: "ZARINPAL";
+  // driver: "ZARINPAL";
   authority: string;
   merchantId: string;
   amount: number;

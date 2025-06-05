@@ -1,10 +1,10 @@
 export interface ZarinpalInquiryPaymentOptions {
   authority: string;
-  merchant_id: string;
+  merchantId: string;
 }
 
 export interface ZarinpalInquiryOptions extends ZarinpalInquiryPaymentOptions {
-  driver: "ZARINPAL";
+  // driver: "ZARINPAL";
   sandbox: boolean;
 }
 
@@ -21,8 +21,10 @@ export interface ZarinpalInquiryResponseData {
 
 export interface ZarinpalInquiryResponseError {
   message: string;
-  code: number;
-  validations: [];
+  errors: {
+    authority: string[];
+    merchant_id: string[];
+  };
 }
 
 export interface ZarinpalInquiryResponseExtraData {

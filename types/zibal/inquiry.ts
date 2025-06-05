@@ -4,7 +4,6 @@ export interface ZibalInquiryPaymentOptions {
 }
 
 export interface ZibalInquiryOptions extends ZibalInquiryPaymentOptions {
-  driver: "ZIBAL";
   sandbox: boolean;
 }
 
@@ -38,4 +37,9 @@ export interface ZibalInquiryResponseExtraData {
   description: string;
   orderId?: string;
   wage: 0 | 1 | 2;
+}
+
+export interface ZibalInquiryResponseError {
+  result: ZibalInquiryResult;
+  message: string;
 }
