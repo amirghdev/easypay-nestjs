@@ -3,16 +3,16 @@ import {
   NovinpalRequestPaymentOptions,
   NovinpalRequestResponse,
   NovinpalRequestResponseExtraData,
-} from "../request/novinpal.request";
-import { BaseRequestResponse } from "../request/request";
+} from "../types/novinpal/request";
+import { BaseRequestResponse } from "../types/base/request";
 import {
   ZarinpalRequestOptions,
   ZarinpalRequestPaymentOptions,
   ZarinpalRequestResponse,
   ZarinpalRequestResponseExtraData,
-} from "../request/zarinpal.request";
-import { ZibalRequestOptions, ZibalRequestResponse, ZibalRequestResponseExtraData } from "../request/zibal.request";
-import { ZibalRequestPaymentOptions } from "../request/zibal.request";
+} from "../types/zarinpal/request";
+import { ZibalRequestOptions, ZibalRequestResponse, ZibalRequestResponseExtraData } from "../types/zibal/request";
+import { ZibalRequestPaymentOptions } from "../types/zibal/request";
 
 export abstract class BasicDriver {
   abstract getRequestBody(

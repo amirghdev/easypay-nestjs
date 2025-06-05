@@ -1,7 +1,7 @@
-import { BaseVerifyOptions } from "./verify";
+import { BaseVerifyOptions } from "../base/verify";
 
 export interface NovinpalVerifyOptions extends BaseVerifyOptions {
-  driver: "NOVINPAL";
+  // driver: "NOVINPAL";
   apiKey: string;
   refId: string;
 }
@@ -14,7 +14,7 @@ export interface NovinpalVerifyPaymentOptions {
 export interface NovinpalVerifyPaymentResponse {
   paidAt?: Date;
   cardNumber: number;
-  status: 1 | 0 | -1 | -2;
+  status?: 1 | 0 | -1 | -2;
   amount: number;
   refNumber?: number;
   refId: number;
