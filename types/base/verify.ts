@@ -2,6 +2,7 @@ import { ZarinpalVerifyOptions, ZarinpalVerifyPaymentResponseExtraData } from ".
 import { ZibalVerifyOptions, ZibalVerifyPaymentResponseExtraData } from "../zibal/verify";
 import { NovinpalVerifyOptions, NovinpalVerifyPaymentResponseExtraData } from "../novinpal/verify";
 import { Driver } from "./general";
+import { Payment4VerifyOptions, Payment4VerifyResponseExtraData } from "../payment4/verify";
 
 export interface BaseVerifyOptions {
   sandbox?: boolean;
@@ -9,7 +10,7 @@ export interface BaseVerifyOptions {
 
 export type VerifyOptions = {
   driver: Driver;
-  options: ZarinpalVerifyOptions | ZibalVerifyOptions | NovinpalVerifyOptions;
+  options: ZarinpalVerifyOptions | ZibalVerifyOptions | NovinpalVerifyOptions | Payment4VerifyOptions;
 };
 
 export interface BaseVerifyResponse<T extends VerifyData> {
@@ -20,4 +21,8 @@ export interface BaseVerifyResponse<T extends VerifyData> {
   raw?: unknown;
 }
 
-export type VerifyData = ZarinpalVerifyPaymentResponseExtraData | ZibalVerifyPaymentResponseExtraData | NovinpalVerifyPaymentResponseExtraData;
+export type VerifyData =
+  | ZarinpalVerifyPaymentResponseExtraData
+  | ZibalVerifyPaymentResponseExtraData
+  | NovinpalVerifyPaymentResponseExtraData
+  | Payment4VerifyResponseExtraData;

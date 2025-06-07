@@ -1,4 +1,4 @@
-export type GatewayCallback = ZarinpalGatewayCallback | ZibalGatewayCallback | NovinpalGatewayCallback;
+export type GatewayCallback = ZarinpalGatewayCallback | ZibalGatewayCallback | NovinpalGatewayCallback | Payment4GatewayCallback;
 
 export interface ZarinpalGatewayCallback {
   port: "ZARINPAL";
@@ -21,4 +21,10 @@ export interface NovinpalGatewayCallback {
   code: number | string;
   invoiceNumber: number;
   amount: number;
+}
+
+export interface Payment4GatewayCallback {
+  port: "PAYMENT4";
+  paymentUid: string;
+  paymentStatus: "SUCCESS" | "ACCEPTABLE" | "MISMATCH" | "EXPIRED";
 }
