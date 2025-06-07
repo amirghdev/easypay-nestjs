@@ -1,11 +1,6 @@
-export interface ZarinpalErrorCode {
-  code: number;
-  message: string;
-  description: string;
-  details: string;
-}
+import { BaseError } from "../types/base/error";
 
-export const ZarinpalErrorCodes: Record<string, ZarinpalErrorCode> = {
+export const ZarinpalErrorCodes: Record<string, BaseError> = {
   // General errors
   "-9": {
     code: -9,
