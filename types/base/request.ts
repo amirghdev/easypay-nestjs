@@ -2,6 +2,7 @@ import { ZarinpalRequestOptions, ZarinpalRequestResponseExtraData } from "../zar
 import { ZibalRequestOptions, ZibalRequestResponseExtraData } from "../zibal/request";
 import { NovinpalRequestOptions, NovinpalRequestResponseExtraData } from "../novinpal/request";
 import { Driver } from "./general";
+import { Payment4RequestOptions, Payment4RequestResponseExtraData } from "../payment4/request";
 
 export interface BaseRequestOptions {
   amount: number;
@@ -12,7 +13,7 @@ export interface BaseRequestOptions {
 
 export type RequestOptions = {
   driver: Driver;
-  options: ZarinpalRequestOptions | ZibalRequestOptions | NovinpalRequestOptions;
+  options: ZarinpalRequestOptions | ZibalRequestOptions | NovinpalRequestOptions | Payment4RequestOptions;
 };
 
 export interface BaseRequestResponse<T extends RequestData> {
@@ -28,4 +29,8 @@ export interface RequestError {
   message?: string;
 }
 
-export type RequestData = ZarinpalRequestResponseExtraData | ZibalRequestResponseExtraData | NovinpalRequestResponseExtraData;
+export type RequestData =
+  | ZarinpalRequestResponseExtraData
+  | ZibalRequestResponseExtraData
+  | NovinpalRequestResponseExtraData
+  | Payment4RequestResponseExtraData;

@@ -17,6 +17,10 @@ import { ZarinpalStrategy } from "../strategies/zarinpal.strategy";
 import { ZibalStrategy } from "../strategies/zibal.strategy";
 import { NovinpalStrategy } from "../strategies/novinpal.strategy";
 import { Driver } from "../types/base/general";
+import { Payment4RequestResponseExtraData } from "../types/payment4/request";
+import { Payment4RequestOptions } from "../types/payment4/request";
+import { Payment4Strategy } from "../strategies/payment4.strategy";
+import { Payment4VerifyOptions, Payment4VerifyResponseExtraData } from "../types/payment4/verify";
 
 @Injectable()
 export class EasypayService {
@@ -25,6 +29,7 @@ export class EasypayService {
   public request(options: { driver: "ZARINPAL"; options: ZarinpalRequestOptions }): Promise<BaseRequestResponse<ZarinpalRequestResponseExtraData>>;
   public request(options: { driver: "ZIBAL"; options: ZibalRequestOptions }): Promise<BaseRequestResponse<ZibalRequestResponseExtraData>>;
   public request(options: { driver: "NOVINPAL"; options: NovinpalRequestOptions }): Promise<BaseRequestResponse<NovinpalRequestResponseExtraData>>;
+  public request(options: { driver: "PAYMENT4"; options: Payment4RequestOptions }): Promise<BaseRequestResponse<Payment4RequestResponseExtraData>>;
   async request<T extends RequestData>(options: RequestOptions): Promise<BaseRequestResponse<T>> {
     this.setStrategyBasedOnDriver(options.driver);
     return this.strategy.request(options);
@@ -33,6 +38,7 @@ export class EasypayService {
   public verify(options: { driver: "ZARINPAL"; options: ZarinpalVerifyOptions }): Promise<BaseVerifyResponse<ZarinpalVerifyPaymentResponseExtraData>>;
   public verify(options: { driver: "ZIBAL"; options: ZibalVerifyOptions }): Promise<BaseVerifyResponse<ZibalVerifyPaymentResponseExtraData>>;
   public verify(options: { driver: "NOVINPAL"; options: NovinpalVerifyOptions }): Promise<BaseVerifyResponse<NovinpalVerifyPaymentResponseExtraData>>;
+  public verify(options: { driver: "PAYMENT4"; options: Payment4VerifyOptions }): Promise<BaseVerifyResponse<Payment4VerifyResponseExtraData>>;
   async verify<T extends VerifyData>(options: VerifyOptions): Promise<BaseVerifyResponse<T>> {
     this.setStrategyBasedOnDriver(options.driver);
     return this.strategy.verify(options);
@@ -55,6 +61,9 @@ export class EasypayService {
         break;
       case "NOVINPAL":
         this.strategy = new NovinpalStrategy();
+        break;
+      case "PAYMENT4":
+        this.strategy = new Payment4Strategy();
         break;
     }
   }
