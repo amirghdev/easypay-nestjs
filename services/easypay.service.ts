@@ -20,6 +20,7 @@ import { Driver } from "../types/base/general";
 import { Payment4RequestResponseExtraData } from "../types/payment4/request";
 import { Payment4RequestOptions } from "../types/payment4/request";
 import { Payment4Strategy } from "../strategies/payment4.strategy";
+import { Payment4VerifyOptions, Payment4VerifyResponseExtraData } from "../types/payment4/verify";
 
 @Injectable()
 export class EasypayService {
@@ -37,6 +38,7 @@ export class EasypayService {
   public verify(options: { driver: "ZARINPAL"; options: ZarinpalVerifyOptions }): Promise<BaseVerifyResponse<ZarinpalVerifyPaymentResponseExtraData>>;
   public verify(options: { driver: "ZIBAL"; options: ZibalVerifyOptions }): Promise<BaseVerifyResponse<ZibalVerifyPaymentResponseExtraData>>;
   public verify(options: { driver: "NOVINPAL"; options: NovinpalVerifyOptions }): Promise<BaseVerifyResponse<NovinpalVerifyPaymentResponseExtraData>>;
+  public verify(options: { driver: "PAYMENT4"; options: Payment4VerifyOptions }): Promise<BaseVerifyResponse<Payment4VerifyResponseExtraData>>;
   async verify<T extends VerifyData>(options: VerifyOptions): Promise<BaseVerifyResponse<T>> {
     this.setStrategyBasedOnDriver(options.driver);
     return this.strategy.verify(options);

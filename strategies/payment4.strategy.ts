@@ -9,10 +9,12 @@ import {
   Payment4VerifyResponseExtraData,
   Payment4RequestOptions,
   Payment4RequestResponse,
-  Payment4RequestError,
+  Payment4VerifyError,
+  Payment4VerifyOptions,
+  Payment4VerifyResponse,
 } from "types";
 
-export class Payment4Strategy implements BasePaymentStrategy<Payment4RequestResponseExtraData, Payment4VerifyResponseExtraData, null> {
+export class Payment4Strategy implements BasePaymentStrategy<Payment4RequestResponseExtraData, Payment4VerifyResponseExtraData> {
   private readonly API_URL = "https://service.payment4.com/api/v1/payment";
 
   async request(data: RequestOptions): Promise<BaseRequestResponse<Payment4RequestResponseExtraData>> {
@@ -51,7 +53,7 @@ export class Payment4Strategy implements BasePaymentStrategy<Payment4RequestResp
       };
     } catch (error) {
       if (error instanceof AxiosError) {
-        const errorDetails = error?.response?.data as Payment4RequestError;
+        const errorDetails = error?.response?.data as Payment4VerifyError;
 
         return {
           success: false,
@@ -72,7 +74,51 @@ export class Payment4Strategy implements BasePaymentStrategy<Payment4RequestResp
     }
   }
 
-  verify(options: VerifyOptions): Promise<BaseVerifyResponse<Payment4VerifyResponseExtraData>> {
-    throw new Error("Method not implemented.");
+  async verify(data: VerifyOptions): Promise<BaseVerifyResponse<Payment4VerifyResponseExtraData>> {
+    const options = data.options as Payment4VerifyOptions;
+
+    try {
+      const request = await axios.put<Payment4VerifyResponse>(
+        `${this.API_URL}/verify`,
+        {
+          paymentUid: options.paymentUid,
+          amount: options.amount,
+          currency: options.currency,
+          sandBox: options.sandBox,
+        },
+        {
+          headers: {
+            "x-api-key": options.apiKey,
+          },
+        },
+      );
+
+      return {
+        success: request.data.verified,
+        message: request.data.paymentStatus,
+        data: request.data.amountDifference ? { amountDifference: request.data.amountDifference } : null,
+        raw: request.data,
+      };
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const errorDetails = error?.response?.data as Payment4VerifyError;
+
+        return {
+          success: false,
+          code: errorDetails.errorCode || 400,
+          message: errorDetails.message,
+          data: null,
+          raw: errorDetails,
+        };
+      } else {
+        return {
+          success: false,
+          code: 500,
+          message: "Unknown error",
+          data: null,
+          raw: JSON.stringify(error),
+        };
+      }
+    }
   }
 }
