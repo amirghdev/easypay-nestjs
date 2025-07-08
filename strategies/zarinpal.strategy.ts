@@ -12,6 +12,7 @@ import { BaseVerifyResponse, VerifyOptions } from "../types/base/verify";
 import { BaseInquiryResponse, InquiryOptions } from "../types/base/inquiry";
 import axios, { AxiosError } from "axios";
 import { RequestType } from "../types/base/general";
+import { Logger } from "class/logger";
 
 export class ZarinpalStrategy
   implements BasePaymentStrategy<ZarinpalRequestResponseExtraData, ZarinpalVerifyPaymentResponseExtraData, ZarinpalInquiryResponseExtraData>
@@ -25,6 +26,8 @@ export class ZarinpalStrategy
     sandbox: "https://sandbox.zarinpal.com/pg/StartPay",
     production: "https://payment.zarinpal.com/pg/StartPay",
   };
+
+  private logger = new Logger("ZARINPAL");
 
   async request(data: RequestOptions): Promise<BaseRequestResponse<ZarinpalRequestResponseExtraData>> {
     const options = data.options as ZarinpalRequestOptions;
@@ -54,6 +57,8 @@ export class ZarinpalStrategy
         },
       };
     } catch (error) {
+      this.logger.error("request", error);
+
       if (error instanceof AxiosError) {
         return this.handleError(error as AxiosError, "request");
       } else {
@@ -93,6 +98,8 @@ export class ZarinpalStrategy
         },
       };
     } catch (error) {
+      this.logger.error("verify", error);
+
       if (error instanceof AxiosError) {
         return this.handleError(error as AxiosError, "verify");
       } else {
@@ -127,6 +134,8 @@ export class ZarinpalStrategy
         },
       };
     } catch (error) {
+      this.logger.error("inquiry", error);
+
       if (error instanceof AxiosError) {
         return this.handleError(error as AxiosError, "inquiry");
       } else {
@@ -142,6 +151,20 @@ export class ZarinpalStrategy
   }
 
   private handleError(error: AxiosError, type: RequestType) {
+    // Handle network errors (DNS, connection refused, etc.)
+    if (!error.response) {
+      return {
+        success: false,
+        data: null,
+        code: 500,
+        message: "خطا در اتصال به سرور پرداخت",
+        raw: {
+          error: error.message,
+          code: error.code,
+        },
+      };
+    }
+
     switch (type) {
       case "request":
         const requestResponse = error?.response?.data as ZarinpalRequestResponse;
