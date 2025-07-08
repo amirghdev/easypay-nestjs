@@ -90,5 +90,6 @@ const zarinpalInquiry = await this.easypayService.inquiry({
 - زرین‌ پال (ZarinPal)
 - زیبال (Zibal)
 - نوین پال (Novinpal)
+- پرداخت 4 (Payment4)
 
 ساخته شده با ❤️ برای توسعه‌دهندگان ایرانی
