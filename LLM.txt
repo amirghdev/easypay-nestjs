@@ -1,0 +1,183 @@
+EasyPay NestJS – Usage Guide for Automation
+
+1. Overview
+- `easypay-nestjs` wraps multiple Iranian payment gateways behind a single NestJS-friendly API.
+- Exposes three flows: `request` (create payment), `verify` (confirm payment), `inquiry` (check payment status; ZarinPal + Zibal only).
+- Drivers supported: `ZARINPAL`, `ZIBAL`, `NOVINPAL`, `PAYMENT4`.
+
+2. Installation
+- Use Bun to add the package and keep peer deps aligned:
+  - `bun add easypay-nestjs`
+  - Ensure NestJS (>=8 <11) and `@nestjs/axios`, `axios` are available; Bun resolves them automatically if already in the project.
+- If the host app relies on npm or yarn, they remain compatible, but Bun is preferred per project policy.
+
+3. Registering the Module
+- Import `EasypayModule` once in the root module (the module is marked `@Global()`):
+  - ```typescript
+    import { Module } from "@nestjs/common";
+    import { EasypayModule } from "easypay-nestjs";
+
+    @Module({
+      imports: [EasypayModule],
+    })
+    export class AppModule {}
+    ```
+- No extra configuration is required; the module provides a singleton `EasypayService`.
+
+4. Injecting the Service
+- Inject `EasypayService` into any provider to access gateway flows:
+  - ```typescript
+    import { Injectable } from "@nestjs/common";
+    import { EasypayService } from "easypay-nestjs";
+
+    @Injectable()
+    export class PaymentsFacade {
+      constructor(private readonly easypay: EasypayService) {}
+    }
+    ```
+- The service exposes `request`, `verify`, and `inquiry` with overloads that enforce driver-specific option shapes.
+
+5. Request Flow (Create Payment)
+- Call `easypay.request({ driver, options })`. All request options extend `BaseRequestOptions`:
+  - `amount` (rial), `callbackUrl`, optional `sandbox`, `description`.
+- The service returns `BaseRequestResponse<T>`:
+  - `success`: boolean flag.
+  - `code`, `message`: gateway status information.
+  - `data`: typed extras containing redirect tokens and gateway URLs.
+  - `raw`: raw gateway payload for auditing/troubleshooting.
+- Typical usage:
+  - ```typescript
+    const response = await this.easypay.request({
+      driver: "ZARINPAL",
+      options: {
+        amount: 20000,
+        callbackUrl: "https://app.test/payments/zarinpal/callback",
+        merchantId: process.env.ZARINPAL_MERCHANT_ID!,
+        sandbox: true,
+        description: "Invoice #1234",
+      },
+    });
+
+    if (response.success && response.data?.url) {
+      return { redirectUrl: response.data.url, authority: response.data.authority };
+    }
+    throw new Error(response.message ?? "Payment request failed");
+    ```
+- Redirect the customer to `response.data.url` if present.
+
+6. Verify Flow (Handle Callback)
+- Gateways call back to your `callbackUrl` with transaction details (`Authority` / `trackId` etc.).
+- Invoke `easypay.verify({ driver, options })` using values from the callback:
+  - Example for ZarinPal:
+    - ```typescript
+      const result = await this.easypay.verify({
+        driver: "ZARINPAL",
+        options: {
+          amount: 20000,
+          authority: dto.authority,
+          merchantId: process.env.ZARINPAL_MERCHANT_ID!,
+          sandbox: true,
+        },
+      });
+
+      if (!result.success) throw new Error(result.message ?? "Verification failed");
+      return result.data; // contains refId, card masks, fee info
+      ```
+- Each driver populates `BaseVerifyResponse<T>` with gateway-specific fields (see section 8).
+
+7. Inquiry Flow (Optional Status Check)
+- Available for `ZARINPAL` and `ZIBAL`:
+  - ```typescript
+    const status = await this.easypay.inquiry({
+      driver: "ZARINPAL",
+      options: {
+        authority: dto.authority,
+        merchantId: process.env.ZARINPAL_MERCHANT_ID!,
+        sandbox: true,
+      },
+    });
+    ```
+- Use when callbacks are delayed or to reconcile payments.
+
+8. Driver Option Reference
+- **ZarinPal (`ZARINPAL`)**
+  - Request: `merchantId` (required), optional `orderId`, `metadata.mobile|email`.
+  - Verify: `authority`, `merchantId`, `amount`.
+  - Inquiry: `authority`, `merchantId`.
+  - Response extras: `authority`, `url`, `fee`, `fee_type`, verification `refId`, `card_pan`, etc.
+- **Zibal (`ZIBAL`)**
+  - Request: `merchant` (ID), optional `orderId`, `mobile`, `description`, `fee`.
+  - Verify: `trackId`, `merchant`, optional `amount`.
+  - Inquiry: `trackId`, `merchant`.
+  - Responses expose `trackId`, `orderId`, `paymentUrl`, `status`, `result`.
+- **Novinpal (`NOVINPAL`)**
+  - Request: `merchant`, `callback_method?`, optional payer fields.
+  - Verify: `token`, `merchant`.
+  - No inquiry support.
+- **Payment4 (`PAYMENT4`)**
+  - Request: `terminalId`, `redirectUri`, `invoiceNumber`, optional `payerMobile`.
+  - Verify: `authority`, `terminalId`, `invoiceNumber`, `amount`.
+  - No inquiry support.
+- Inspect `types/<driver>` for the complete shape whenever in doubt; these files include any nested metadata structures.
+
+9. Error Handling
+- All flows resolve to `Base*Response` objects instead of throwing unless a transport error occurs.
+- On HTTP or unexpected errors, strategies may throw driver-specific errors found in `errors/`.
+- Handle errors by checking `response.success`; log `response.raw` for troubleshooting when false.
+- Wrap calls in try/catch to surface network or configuration issues.
+
+10. Environment and Sandbox
+- Every driver accepts `sandbox` in request/verify/inquiry options when the gateway supports test mode.
+- Keep credential sets (merchant IDs, terminal IDs) in environment variables and inject via Nest config.
+- Use different callback URLs per environment when gateways require whitelisted domains.
+
+11. Example Controller Flow
+- ```typescript
+  @Controller("payments")
+  export class PaymentsController {
+    constructor(private readonly easypay: EasypayService) {}
+
+    @Post("zarinpal")
+    async create(@Body() dto: CreatePaymentDto) {
+      const res = await this.easypay.request({ driver: "ZARINPAL", options: dto });
+      if (!res.success || !res.data?.url) throw new BadRequestException(res.message);
+      return { redirectUrl: res.data.url, authority: res.data.authority };
+    }
+
+    @Post("zarinpal/callback")
+    async callback(@Body() dto: CallbackDto) {
+      const verify = await this.easypay.verify({
+        driver: "ZARINPAL",
+        options: {
+          amount: dto.amount,
+          authority: dto.authority,
+          merchantId: dto.merchantId,
+        },
+      });
+      if (!verify.success) throw new BadRequestException(verify.message);
+      return verify.data;
+    }
+  }
+  ```
+- Adjust DTOs so fields match driver-specific option interfaces.
+
+12. Testing & Validation
+- After integrating or modifying flows, run `bun run build` to ensure TypeScript passes.
+- Create thin integration tests mocking Nest `HttpService` for each driver if you introduce new logic.
+- For manual verification, simulate gateways by mocking callback payloads and confirm the service handles success and failure branches.
+
+13. Extending Usage
+- To add new endpoints or cron jobs that call the service, reuse the same pattern: select driver, pass typed options, handle boolean `success`.
+- When you need direct strategy access (rare), import driver classes from `class/driver.ts`, but prefer the service unless you need custom lifecycle management.
+
+14. Deployment Checklist
+- Confirm all required env variables are defined in production (merchant IDs, terminal IDs, callback URLs).
+- Ensure callback routes are deployed over HTTPS and publicly reachable.
+- Logs should capture `driver`, `amount`, `authority/trackId`, `success`, `code`, `message` for downstream auditing.
+- Monitor for gateway-specific downtime; strategies rely on live endpoints with no circuit breaker by default.
+
+15. References
+- `index.ts` re-exports everything needed for consumption.
+- Legacy docs for version 1 remain in `v1.md`; ignore unless supporting older API surface.
+- For gateway-specific docs, consult provider portals; this package mirrors their REST APIs but normalizes field names.
+
